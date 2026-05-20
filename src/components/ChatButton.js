@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { saveChatLead } from "../services/leadService";
 
 // ─── WhatsApp number (India +91) ──────────────────────────────────────────────
@@ -478,19 +479,65 @@ export default function ChatButton({ onOrderNow }) {
         </div>
       )}
 
-      {/* ── Floating Button ── */}
-      <button
+      {/* ── Premium Floating Button ── */}
+      <motion.button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="text-white p-4 rounded-full shadow-2xl hover:scale-110 transition flex items-center space-x-2"
-        style={{ background: "linear-gradient(135deg, #78350f, #b45309)" }}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 1, type: "spring", stiffness: 200, damping: 15 }}
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.94 }}
         aria-label="Chat with our baker"
+        className="relative flex items-center gap-3 pl-4 pr-5 py-3.5 rounded-full shadow-2xl overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, #1a0f00, #3d1f00)",
+          border: "1px solid rgba(212,168,67,0.25)",
+          boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,168,67,0.1)",
+        }}
       >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-            d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span className="text-sm font-semibold pr-2">Chat with our Baker</span>
-      </button>
+        {/* animated gold ring */}
+        <motion.span
+          className="absolute inset-0 rounded-full pointer-events-none"
+          animate={{ boxShadow: ["0 0 0 0px rgba(212,168,67,0.3)", "0 0 0 8px rgba(212,168,67,0)", "0 0 0 0px rgba(212,168,67,0)"] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut" }}
+        />
+
+        {/* shimmer sweep */}
+        <motion.span
+          className="absolute inset-0 -skew-x-12 pointer-events-none"
+          style={{ background: "linear-gradient(90deg, transparent, rgba(212,168,67,0.12), transparent)" }}
+          animate={{ x: ["-100%", "200%"] }}
+          transition={{ duration: 2.5, repeat: Infinity, repeatDelay: 2 }}
+        />
+
+        {/* baker avatar */}
+        <div className="relative w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+          style={{ background: "linear-gradient(135deg, rgba(212,168,67,0.2), rgba(212,168,67,0.05))", border: "1px solid rgba(212,168,67,0.3)" }}>
+          <span className="text-base">👨‍🍳</span>
+          {/* online dot */}
+          <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 bg-green-400"
+            style={{ borderColor: "#1a0f00" }}/>
+        </div>
+
+        {/* text */}
+        <div className="text-left">
+          <p className="text-[11px] font-bold text-white leading-tight tracking-wide">Chat with our Baker</p>
+          <p className="text-[9px] font-medium" style={{ color: "rgba(212,168,67,0.6)" }}>
+            {isOpen ? "Close chat" : "Typically replies instantly"}
+          </p>
+        </div>
+
+        {/* arrow / close icon */}
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+          className="ml-1"
+        >
+          <svg className="w-3.5 h-3.5" style={{ color: "rgba(212,168,67,0.6)" }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7"/>
+          </svg>
+        </motion.div>
+      </motion.button>
     </div>
   );
 }

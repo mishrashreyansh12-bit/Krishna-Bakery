@@ -231,32 +231,35 @@ export default function Reviews() {
   });
 
   return (
-    <section id="reviews" className="py-24 bg-[#FAF9F6] px-6">
+    <section id="reviews" className="py-24 px-6" style={{ background: "#0a0804" }}>
       <div className="max-w-5xl mx-auto">
 
         {/* Heading */}
         <div className="text-center mb-14">
-          <p className="text-amber-700 text-xs uppercase tracking-[0.3em] font-semibold mb-3">What People Say</p>
-          <h2 className="text-4xl md:text-5xl text-gray-900 mb-4" style={{ fontFamily: "Georgia, serif" }}>Real Reviews</h2>
-          <p className="text-gray-500 text-sm max-w-md mx-auto">From our customers — unfiltered, unedited, and straight from the heart.</p>
+          <p className="text-xs uppercase tracking-[0.4em] font-semibold mb-3" style={{ color: "rgba(212,168,67,0.6)" }}>What People Say</p>
+          <h2 className="text-4xl md:text-5xl mb-4 font-light text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+            Real <em className="font-bold italic" style={{ background: "linear-gradient(135deg,#C9973A,#F0CC6E)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>Reviews</em>
+          </h2>
+          <p className="text-sm max-w-md mx-auto" style={{ color: "rgba(255,255,255,0.3)" }}>From our customers — unfiltered, unedited, and straight from the heart.</p>
         </div>
 
         {/* Rating Summary */}
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 md:p-8 mb-10 flex flex-col md:flex-row items-center gap-8 shadow-sm">
+        <div className="rounded-2xl p-6 md:p-8 mb-10 flex flex-col md:flex-row items-center gap-8"
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="text-center shrink-0">
-            <p className="text-7xl font-bold text-gray-900">{AVG_RATING}</p>
+            <p className="text-7xl font-bold" style={{ background: "linear-gradient(135deg,#D4A843,#F5D78E)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>{AVG_RATING}</p>
             <Stars rating={5} size="lg" />
-            <p className="text-xs text-gray-400 mt-2">{TOTAL_REVIEWS.toLocaleString()} reviews</p>
+            <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.3)" }}>{TOTAL_REVIEWS.toLocaleString()} reviews</p>
           </div>
           <div className="flex-1 w-full space-y-2">
             {[5,4,3,2,1].map((star) => (
               <div key={star} className="flex items-center gap-3">
-                <span className="text-xs text-gray-500 w-4 text-right">{star}</span>
+                <span className="text-xs w-4 text-right" style={{ color: "rgba(255,255,255,0.4)" }}>{star}</span>
                 <svg className="w-3 h-3 text-amber-400 shrink-0" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                 </svg>
-                <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
-                  <div className="h-full bg-amber-400 rounded-full" style={{ width: `${RATING_SUMMARY[star]}%` }} />
+                <div className="flex-1 rounded-full h-1.5 overflow-hidden" style={{ background: "rgba(255,255,255,0.06)" }}>
+                  <div className="h-full rounded-full" style={{ width: `${RATING_SUMMARY[star]}%`, background: "linear-gradient(to right, #C9973A, #F0CC6E)" }} />
                 </div>
                 <span className="text-xs text-gray-400 w-8">{RATING_SUMMARY[star]}%</span>
               </div>
