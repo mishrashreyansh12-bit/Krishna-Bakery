@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+// import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { saveChatLead } from "../services/leadService";
 
 // ─── WhatsApp number (India +91) ──────────────────────────────────────────────
