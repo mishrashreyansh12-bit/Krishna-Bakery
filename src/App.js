@@ -34,11 +34,17 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // ── Show login popup on every visit if not logged in ────────────────────
+  // ── Show login popup once per session if not logged in ─────────────────
   useEffect(() => {
     if (!user) {
-      const t = setTimeout(() => setShowAuth(true), 1000);
-      return () => clearTimeout(t);
+      const seen = sessionStorage.getItem("popupShown");
+      if (!seen) {
+        const t = setTimeout(() => {
+          setShowAuth(true);
+          sessionStorage.setItem("popupShown", "1");
+        }, 1500);
+        return () => clearTimeout(t);
+      }
     }
   }, [user]);
 

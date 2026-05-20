@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect } from "react";
-import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 
-// ── 42 Bakery Products ───────────────────────────────────────────────────────
+// ── 48 Premium International Bakery Products ────────────────────────────────
 const PRODUCTS = [
   // ── Signature Cakes ──
   { id:1,  name:"Dark Chocolate Truffle",      category:"Signature Cakes",  priceINR:520,  priceUSD:6.25,  tag:"Bestseller",  desc:"72% dark ganache, velvet crumb, zero compromise.",           image:"https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=90&w=800" },
@@ -308,11 +308,11 @@ export default function Collection({ onProductClick }) {
   const byCategory = (cat) => PRODUCTS.filter(p => p.category === cat);
 
   const ROWS = [
-    { label: "✦ Signature & Luxe",    products: [...byCategory("Signature Cakes"), ...byCategory("Luxe Collection")], dir: 1  },
-    { label: "✦ Donuts & Cupcakes",   products: [...byCategory("Donuts"),           ...byCategory("Cupcakes")],        dir: -1 },
-    { label: "✦ Viennoiserie",        products: [...byCategory("Viennoiserie"),     ...byCategory("Cookies")],         dir: 1  },
-    { label: "✦ Brownies & Breads",   products: [...byCategory("Brownies"),         ...byCategory("Breads")],          dir: -1 },
-    { label: "✦ Tea Cakes & Specials",products: byCategory("Tea Cakes"),                                               dir: 1  },
+    { label: "✦ Signature & Luxe",       products: [...byCategory("Signature Cakes"), ...byCategory("Luxe Collection")], dir: 1  },
+    { label: "✦ Donuts & Cupcakes",      products: [...byCategory("Donuts"),           ...byCategory("Cupcakes")],        dir: -1 },
+    { label: "✦ Viennoiserie & Cookies", products: [...byCategory("Viennoiserie"),     ...byCategory("Cookies")],         dir: 1  },
+    { label: "✦ Brownies & Breads",      products: [...byCategory("Brownies"),         ...byCategory("Breads")],          dir: -1 },
+    { label: "✦ Tea Cakes",              products: byCategory("Tea Cakes"),                                               dir: 1  },
   ];
 
   const filtered = activeCategory === "All"
