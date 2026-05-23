@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { supabase } from './supabase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -22,6 +22,42 @@ function App() {
   const [showAuth,          setShowAuth]          = useState(false);
   const [user,              setUser]              = useState(null);
   const [appliedPromo,      setAppliedPromo]      = useState(null);
+
+  // ── Custom cursor ────────────────────────────────────────────────────────
+  const cursorRing = useRef(null);
+  const cursorDot  = useRef(null);
+  const pos = useRef({ x: 0, y: 0 });
+  const ring = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const move = (e) => {
+      pos.current = { x: e.clientX, y: e.clientY };
+      if (cursorDot.current) {
+        cursorDot.current.style.transform = `translate(${e.clientX - 4}px, ${e.clientY - 4}px)`;
+      }
+    };
+    window.addEventListener("mousemove", move);
+
+    let raf;
+    const animate = () => {
+      ring.current.x += (pos.current.x - ring.current.x) * 0.12;
+      ring.current.y += (pos.current.y - ring.current.y) * 0.12;
+      if (cursorRing.current) {
+        cursorRing.current.style.transform = `translate(${ring.current.x - 18}px, ${ring.current.y - 18}px)`;
+      }
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+
+    const onEnter = () => { if (cursorRing.current) cursorRing.current.style.transform += " scale(1.6)"; };
+    const onLeave = () => { if (cursorRing.current) cursorRing.current.style.transform = cursorRing.current.style.transform.replace(" scale(1.6)", ""); };
+    document.querySelectorAll("a,button").forEach(el => { el.addEventListener("mouseenter", onEnter); el.addEventListener("mouseleave", onLeave); });
+
+    return () => {
+      window.removeEventListener("mousemove", move);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
 
   // ── Auth state listener ──────────────────────────────────────────────────
   useEffect(() => {
@@ -77,7 +113,13 @@ function App() {
   }
 
   return (
-    <div className="bg-[#0D0B08] text-white min-h-screen">
+    <div className="min-h-screen" style={{ background: "var(--bg)", color: "var(--ivory)", cursor: "none" }}>
+
+      {/* ── Custom cursor ── */}
+      <div ref={cursorRing} className="fixed z-[9999] pointer-events-none"
+        style={{ width: 36, height: 36, top: 0, left: 0, borderRadius: "50%", border: "1.5px solid rgba(139,94,60,0.5)", transition: "transform 0.08s ease" }}/>
+      <div ref={cursorDot} className="fixed z-[9999] pointer-events-none"
+        style={{ width: 8, height: 8, top: 0, left: 0, borderRadius: "50%", background: "#8B5E3C", transition: "transform 0.02s linear" }}/>
       <Navbar
         onOrderClick={() => setShowOrderModal(true)}
         onLoginClick={() => setShowAuth(true)}

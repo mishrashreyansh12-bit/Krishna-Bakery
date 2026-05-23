@@ -35,7 +35,7 @@ export default function OurStory() {
   const bannerY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
 
   return (
-    <section id="our-story" style={{ background: "#080604" }}>
+    <section id="our-story" style={{ background: "var(--bg)" }}>
 
       {/* ── Cinematic banner ── */}
       <div ref={bannerRef} className="relative h-[70vh] overflow-hidden flex items-center justify-center">

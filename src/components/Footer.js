@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 
 function Footer() {
   return (
-    <footer style={{ background: "#080705", borderTop: "1px solid rgba(212,168,67,0.1)" }}>
+    <footer style={{ background: "var(--bg3)", borderTop: "1px solid var(--border)" }}>
       <div className="max-w-6xl mx-auto px-6 py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
 
