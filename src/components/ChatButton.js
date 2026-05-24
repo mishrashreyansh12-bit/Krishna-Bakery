@@ -367,14 +367,12 @@ export default function ChatButton({ onOrderNow }) {
             </button>
           )}
 
-
-            <button
-              onClick={handleRestart}
-              className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 transition"
-            >
-              Start over
-            </button>
-          )}
+          <button
+            onClick={handleRestart}
+            className="mt-2 text-xs text-amber-700 underline hover:text-amber-900 transition"
+          >
+            Start over
+          </button>
         </div>
       </div>
     );
