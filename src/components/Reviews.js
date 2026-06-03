@@ -143,6 +143,79 @@ function ReviewCard({ review }) {
   );
 }
 
+// ─── Subscribe Form ───────────────────────────────────────────────────────────
+function SubscribeForm() {
+  const [email,     setEmail]     = useState("");
+  const [loading,   setLoading]   = useState(false);
+  const [done,      setDone]      = useState(false);
+  const [error,     setError]     = useState("");
+
+  async function handleSubscribe() {
+    const trimmed = email.trim();
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 900)); // simulate API
+    setLoading(false);
+    setDone(true);
+  }
+
+  if (done) return (
+    <div className="flex flex-col items-center gap-3 relative z-10">
+      <div className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
+        style={{ background: "rgba(34,197,94,0.15)", border: "1px solid rgba(34,197,94,0.3)" }}>
+        ✅
+      </div>
+      <p className="text-sm font-semibold" style={{ color: "#86efac" }}>You're in! Welcome to the club 🎉</p>
+      <p className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>Exclusive updates coming your way.</p>
+    </div>
+  );
+
+  return (
+    <div className="relative z-10 max-w-md mx-auto">
+      <div className="flex flex-col sm:flex-row gap-2">
+        <input
+          type="email"
+          placeholder="Your email address"
+          value={email}
+          onChange={e => { setEmail(e.target.value); setError(""); }}
+          onKeyDown={e => e.key === "Enter" && handleSubscribe()}
+          className="flex-1 rounded-2xl px-5 py-3.5 text-sm outline-none transition-all"
+          style={{
+            background: "rgba(255,255,255,0.06)",
+            border: error ? "1px solid rgba(239,68,68,0.5)" : "1px solid rgba(255,255,255,0.1)",
+            color: "rgba(242,232,217,0.9)",
+          }}
+          onFocus={e => e.target.style.borderColor = "rgba(212,168,67,0.5)"}
+          onBlur={e => e.target.style.borderColor = error ? "rgba(239,68,68,0.5)" : "rgba(255,255,255,0.1)"}
+        />
+        <button
+          onClick={handleSubscribe}
+          disabled={loading || !email.trim()}
+          className="px-6 py-3.5 rounded-2xl text-sm font-bold uppercase tracking-widest transition-all disabled:opacity-40 whitespace-nowrap"
+          style={{ background: "linear-gradient(135deg,#D4A843,#8B6914)", color: "#0a0800" }}
+        >
+          {loading ? (
+            <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+            </svg>
+          ) : "Subscribe →"}
+        </button>
+      </div>
+      {error && (
+        <p className="text-xs mt-2 text-left" style={{ color: "#fca5a5" }}>{error}</p>
+      )}
+      <p className="text-[10px] mt-3" style={{ color: "rgba(255,255,255,0.2)" }}>
+        No spam. Unsubscribe anytime.
+      </p>
+    </div>
+  );
+}
+
 // ─── Write Review Modal ───────────────────────────────────────────────────────
 function WriteReviewModal({ onClose }) {
   const [rating, setRating] = useState(0);
@@ -247,7 +320,7 @@ export default function Reviews() {
         <div className="rounded-2xl p-6 md:p-8 mb-10 flex flex-col md:flex-row items-center gap-8"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="text-center shrink-0">
-            <p className="text-7xl font-bold" style={{ background: "linear-gradient(135deg,#D4A843,#F5D78E)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>{AVG_RATING}</p>
+            <p className="text-5xl md:text-7xl font-bold" style={{ background: "linear-gradient(135deg,#D4A843,#F5D78E)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>{AVG_RATING}</p>
             <Stars rating={5} size="lg" />
             <p className="text-xs mt-2" style={{ color: "rgba(255,255,255,0.3)" }}>{TOTAL_REVIEWS.toLocaleString()} reviews</p>
           </div>
@@ -329,6 +402,42 @@ export default function Reviews() {
             </button>
           </div>
         )}
+
+        {/* ── Subscribe Section ── */}
+        <div className="mt-20 relative overflow-hidden rounded-3xl px-8 py-14 text-center"
+          style={{
+            background: "linear-gradient(135deg, rgba(212,168,67,0.08) 0%, rgba(139,105,20,0.12) 50%, rgba(212,168,67,0.06) 100%)",
+            border: "1px solid rgba(212,168,67,0.18)",
+          }}>
+
+          {/* ambient glow */}
+          <div className="absolute inset-0 pointer-events-none"
+            style={{ background: "radial-gradient(ellipse 70% 60% at 50% 50%, rgba(212,168,67,0.07) 0%, transparent 70%)" }} />
+
+          {/* floating cake emoji */}
+          <div className="text-5xl mb-5 relative z-10">🎂</div>
+
+          <p className="text-[10px] uppercase tracking-[0.4em] mb-3 relative z-10"
+            style={{ color: "rgba(212,168,67,0.6)" }}>
+            Stay in the Loop
+          </p>
+
+          <h3 className="text-3xl md:text-4xl font-light text-white mb-3 relative z-10"
+            style={{ fontFamily: "'Playfair Display', serif" }}>
+            Join the{" "}
+            <em className="font-bold italic" style={{
+              background: "linear-gradient(135deg,#D4A843,#F5D78E)",
+              WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text"
+            }}>Bakery Club</em>
+          </h3>
+
+          <p className="text-sm max-w-sm mx-auto mb-8 relative z-10"
+            style={{ color: "rgba(255,255,255,0.35)" }}>
+            Get exclusive cake launches, festive offers & early access to seasonal specials.
+          </p>
+
+          <SubscribeForm />
+        </div>
       </div>
 
       {showWrite && <WriteReviewModal onClose={() => setShowWrite(false)} />}

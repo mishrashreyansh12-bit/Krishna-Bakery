@@ -1,5 +1,53 @@
 import { useState, useEffect, useRef } from "react";
 import { saveOrder } from "../services/orderService";
+import { useLocation, TRANSLATIONS } from "../context/LocationContext";
+import { AnimatePresence, motion } from "framer-motion";
+import OrderTracking from "./OrderTracking";
+import { applyReferralOnOrder } from "./ReferralSystem";
+
+// ─── Flash Sale Items (id → end time) ────────────────────────────────────────
+const FLASH_SALES = {
+  1:  { label: "Flash Deal",  endTime: Date.now() + 2 * 60 * 60 * 1000 }, // 2 hrs
+  9:  { label: "Flash Deal",  endTime: Date.now() + 1 * 60 * 60 * 1000 }, // 1 hr
+  12: { label: "Happy Hour",  endTime: Date.now() + 3 * 60 * 60 * 1000 }, // 3 hrs
+};
+
+// ─── Frequently Bought Together ───────────────────────────────────────────────
+const FREQUENTLY_TOGETHER = {
+  1:  [9, 12],   // Classic Cake → Brownie + Hot Choc
+  2:  [6, 12],   // Cheesecake → Croissant + Hot Choc
+  9:  [1, 10],   // Brownie → Cake + Walnut Brownie
+  12: [6, 9],    // Hot Choc → Croissant + Brownie
+  6:  [7, 12],   // Croissant → Pain au Choc + Hot Choc
+  3:  [9, 12],   // Choc Truffle → Brownie + Hot Choc
+};
+
+// ─── Combo Offers ─────────────────────────────────────────────────────────────
+const COMBO_OFFERS = [
+  { id: "c1", name: "Cake + Brownies Combo", items: [1, 9],      discount: 10, label: "🎂+🍫 10% OFF" },
+  { id: "c2", name: "Cake + Beverage Combo", items: [1, 12],     discount: 8,  label: "🎂+☕ 8% OFF"  },
+  { id: "c3", name: "Pastry + Coffee Combo", items: [6, 12],     discount: 12, label: "🥐+☕ 12% OFF" },
+  { id: "c4", name: "Brownie Box Combo",     items: [9, 10, 11], discount: 15, label: "🍫×3 15% OFF" },
+];
+
+// ─── Flash Sale Countdown ─────────────────────────────────────────────────────
+function FlashTimer({ endTime }) {
+  const [timeLeft, setTimeLeft] = useState(Math.max(0, endTime - Date.now()));
+  useEffect(() => {
+    const t = setInterval(() => setTimeLeft(Math.max(0, endTime - Date.now())), 1000);
+    return () => clearInterval(t);
+  }, [endTime]);
+  const h = Math.floor(timeLeft / 3600000);
+  const m = Math.floor((timeLeft % 3600000) / 60000);
+  const s = Math.floor((timeLeft % 60000) / 1000);
+  if (timeLeft === 0) return null;
+  return (
+    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-1"
+      style={{ background: "rgba(239,68,68,0.15)", color: "#f87171", border: "1px solid rgba(239,68,68,0.3)" }}>
+      ⏱ {h > 0 ? `${h}h ` : ""}{String(m).padStart(2,"0")}:{String(s).padStart(2,"0")}
+    </span>
+  );
+}
 
 // ─── Menu Data with images ────────────────────────────────────────────────────
 const menuData = [
@@ -80,6 +128,8 @@ const PROMOS = [
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 function OrderMenu({ orderInfo, onClose, highlightProductId }) {
+  const { lang } = useLocation();
+  const t = TRANSLATIONS[lang] || TRANSLATIONS["en"];
   const [cart, setCart] = useState({});
   const [search, setSearch] = useState("");
   const [showCart, setShowCart] = useState(false);
@@ -91,10 +141,37 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
   const [offerIdx, setOfferIdx] = useState(0);
   const [orderPlaced, setOrderPlaced] = useState(false);
   const [orderLoading, setOrderLoading] = useState(false);
+  // New features
+  const [deliveryDate, setDeliveryDate] = useState("today");
+  const [customDate, setCustomDate] = useState("");
+  const [appliedCombo, setAppliedCombo] = useState(null);
+  const [placedOrderId, setPlacedOrderId] = useState(null);
+  const [showTracking, setShowTracking] = useState(false);
+  const [orderNotes, setOrderNotes] = useState("");
+  const [showAbandonedCart, setShowAbandonedCart] = useState(false);
   const itemRefs = useRef({});
   const mainRef = useRef(null);
 
-  // rotate offer banner every 3s
+  // ── URL coupon auto-apply ──────────────────────────────────────────────────
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const urlCoupon = params.get("coupon") || params.get("promo") || params.get("code");
+    if (urlCoupon) {
+      const found = PROMOS.find(p => p.code.toLowerCase() === urlCoupon.toLowerCase());
+      if (found && !appliedPromo) {
+        setAppliedPromo(found);
+      }
+    }
+  }, []);
+
+  // ── Auto-detect combo ──────────────────────────────────────────────────────
+  useEffect(() => {
+    const cartIds = Object.keys(cart).map(Number);
+    const matched = COMBO_OFFERS.find(combo =>
+      combo.items.every(id => cartIds.includes(id))
+    );
+    setAppliedCombo(matched || null);
+  }, [cart]);
   useEffect(() => {
     const t = setInterval(() => setOfferIdx((i) => (i + 1) % PROMOS.length), 3000);
     return () => clearInterval(t);
@@ -158,7 +235,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
           <div>
             <div className="flex items-center gap-2">
               <span className="font-bold text-gray-900 text-base">Krishna Bakers</span>
-              <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold tracking-wide">● OPEN</span>
+              <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-semibold tracking-wide">{t.menuOpen}</span>
             </div>
             <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
               <span>{orderInfo.orderType === "delivery" ? "🚚 Delivery" : "🏪 Pickup"}</span>
@@ -167,7 +244,15 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
             </p>
           </div>
         </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-gray-700 border border-gray-200 rounded-full w-8 h-8 flex items-center justify-center transition text-lg leading-none">✕</button>
+        <button
+          onClick={() => {
+            if (totalItems > 0) {
+              setShowAbandonedCart(true);
+            } else {
+              onClose();
+            }
+          }}
+          className="text-gray-400 hover:text-gray-700 border border-gray-200 rounded-full w-8 h-8 flex items-center justify-center transition text-lg leading-none">✕</button>
       </div>
 
       {/* ── Offer Banner (rotating) ── */}
@@ -198,7 +283,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
           </svg>
           <input
             type="text"
-            placeholder="Search cakes, pastries, brownies..."
+            placeholder={t.menuSearch}
             value={search}
             onChange={(e) => {
               setSearch(e.target.value);
@@ -247,7 +332,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                 <span className="text-xl">{cat.icon}</span>
                 <h3 className="text-base font-bold text-gray-800 uppercase tracking-widest">{cat.category}</h3>
                 <div className="flex-1 h-px bg-gray-100 ml-2" />
-                <span className="text-xs text-gray-400">{cat.items.length} items</span>
+                <span className="text-xs text-gray-400">{cat.items.length} {t.menuItems}</span>
               </div>
 
               {/* items grid */}
@@ -255,6 +340,9 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                 {cat.items.map((item) => {
                   const isHighlighted = item.id === highlightProductId;
                   const qty = cart[item.id] || 0;
+                  // Same day delivery badge — items under ₹600 are same-day eligible
+                  const isSameDay  = item.price <= 600;
+                  const flashSale  = FLASH_SALES[item.id];
                   return (
                     <div
                       key={item.id}
@@ -276,7 +364,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                         {/* overlay on hover */}
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 flex items-center justify-center">
                           <span className="opacity-0 group-hover:opacity-100 transition bg-white/90 text-gray-800 text-xs font-semibold px-3 py-1.5 rounded-full shadow">
-                            Quick View
+                            {t.menuQuickView}
                           </span>
                         </div>
                         {/* badges */}
@@ -289,9 +377,25 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                             }`}>{item.tag}</span>
                           )}
                           {isHighlighted && (
-                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500 text-white animate-pulse">From Chat</span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500 text-white animate-pulse">{t.menuFromChat}</span>
+                          )}
+                          {isSameDay && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-white flex items-center gap-1">
+                              ⚡ Same Day
+                            </span>
+                          )}
+                          {flashSale && (
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500 text-white flex items-center gap-1">
+                              🔥 {flashSale.label}
+                            </span>
                           )}
                         </div>
+                        {/* flash timer on image */}
+                        {flashSale && (
+                          <div className="absolute bottom-2 right-2">
+                            <FlashTimer endTime={flashSale.endTime} />
+                          </div>
+                        )}
                         {/* veg dot */}
                         <div className="absolute top-2 right-2 w-5 h-5 bg-white rounded-sm border border-gray-200 flex items-center justify-center shadow-sm">
                           <span className={`w-2.5 h-2.5 rounded-full ${item.veg ? "bg-green-500" : "bg-red-500"}`} />
@@ -299,7 +403,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                         {/* customizable badge */}
                         {item.customizable && (
                           <div className="absolute bottom-2 left-2 bg-white/90 text-amber-800 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center gap-1">
-                            ✏️ Customizable
+                            ✏️ {t.menuCustomizable}
                           </div>
                         )}
                       </div>
@@ -321,20 +425,20 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                         <div className="flex items-center justify-between">
                           <div>
                             <span className="text-base font-bold text-gray-900">₹{item.price}</span>
-                            <span className="text-xs text-gray-400 ml-1">/ piece</span>
+                            <span className="text-xs text-gray-400 ml-1">{t.menuPiece}</span>
                           </div>
                           {qty > 0 ? (
                             <div className="flex items-center gap-1 bg-amber-900 rounded-xl overflow-hidden">
-                              <button onClick={() => removeItem(item.id)} className="px-3 py-1.5 text-white hover:bg-amber-800 text-base font-bold transition">−</button>
+                              <button onClick={() => removeItem(item.id)} className="px-3 py-2 text-white hover:bg-amber-800 text-base font-bold transition">−</button>
                               <span className="text-sm font-bold text-white w-5 text-center">{qty}</span>
-                              <button onClick={() => addItem(item.id)} className="px-3 py-1.5 text-white hover:bg-amber-800 text-base font-bold transition">+</button>
+                              <button onClick={() => addItem(item.id)} className="px-3 py-2 text-white hover:bg-amber-800 text-base font-bold transition">+</button>
                             </div>
                           ) : (
                             <button
                               onClick={() => addItem(item.id)}
                               className="bg-amber-900 hover:bg-amber-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-1"
                             >
-                              <span>ADD</span>
+                              <span>{t.menuAdd}</span>
                               <span className="text-base leading-none">+</span>
                             </button>
                           )}
@@ -350,14 +454,56 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
 
         {/* bottom padding for cart bar */}
         <div className="h-6" />
+
+        {/* ── Frequently Bought Together ── */}
+        {Object.keys(cart).length > 0 && (() => {
+          const cartIds = Object.keys(cart).map(Number);
+          const suggestions = new Set();
+          cartIds.forEach(id => {
+            (FREQUENTLY_TOGETHER[id] || []).forEach(sid => {
+              if (!cartIds.includes(sid)) suggestions.add(sid);
+            });
+          });
+          const suggestedItems = allItems.filter(i => suggestions.has(i.id)).slice(0, 3);
+          if (suggestedItems.length === 0) return null;
+          return (
+            <div className="px-4 md:px-8 pb-6">
+              <div className="rounded-2xl overflow-hidden border border-amber-100 bg-amber-50">
+                <div className="px-4 py-3 flex items-center gap-2 border-b border-amber-100">
+                  <span className="text-base">🛍️</span>
+                  <p className="text-xs font-bold text-amber-900">Frequently Bought Together</p>
+                </div>
+                <div className="flex gap-3 p-3 overflow-x-auto scrollbar-hide">
+                  {suggestedItems.map(item => (
+                    <div key={item.id} className="flex-shrink-0 w-36 bg-white rounded-xl overflow-hidden border border-amber-100 shadow-sm">
+                      <div className="h-24 overflow-hidden">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover"/>
+                      </div>
+                      <div className="p-2">
+                        <p className="text-[11px] font-semibold text-gray-800 truncate">{item.name}</p>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-xs font-bold text-amber-800">₹{item.price}</span>
+                          <button onClick={() => addItem(item.id)}
+                            className="text-[10px] font-bold px-2 py-1 rounded-lg bg-amber-900 text-white hover:bg-amber-800 transition">
+                            + Add
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
       </div>
 
       {/* ── Cart Bar ── */}
       {totalItems > 0 && (
         <div className="bg-white border-t border-gray-100 px-4 md:px-8 py-4 flex items-center justify-between shadow-[0_-4px_20px_rgba(0,0,0,0.06)] shrink-0">
           <div>
-            <p className="text-sm font-bold text-gray-900">{totalItems} item{totalItems > 1 ? "s" : ""} added</p>
-            <p className="text-xs text-gray-400">Total: ₹{totalPrice}</p>
+            <p className="text-sm font-bold text-gray-900">{totalItems} {totalItems > 1 ? t.menuItemsAdded : t.menuItemAdded}</p>
+            <p className="text-xs text-gray-400">{t.menuTotal} ₹{totalPrice}</p>
           </div>
           <button
             onClick={() => setShowCart(true)}
@@ -366,7 +512,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
-            View Cart →
+            {t.menuViewCart}
           </button>
         </div>
       )}
@@ -379,7 +525,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <div className="flex items-center gap-2">
                 <span className="text-xl">🏷️</span>
-                <h3 className="text-base font-bold text-gray-900">Offers & Promos</h3>
+                <h3 className="text-base font-bold text-gray-900">{t.menuOffersPromos}</h3>
               </div>
               <button onClick={() => setShowPromos(false)} className="text-gray-400 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition text-xl">&times;</button>
             </div>
@@ -399,12 +545,12 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                             {promo.code}
                           </span>
                           {isApplied && (
-                            <span className="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full font-semibold">Applied ✓</span>
+                            <span className="text-[10px] bg-green-500 text-white px-2 py-0.5 rounded-full font-semibold">{t.menuApplied}</span>
                           )}
                         </div>
                         <p className="text-sm text-gray-700 font-medium">{promo.desc}</p>
                         {promo.minOrder && (
-                          <p className="text-xs text-gray-400 mt-0.5">Min. order ₹{promo.minOrder}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">{t.menuMinOrder} ₹{promo.minOrder}</p>
                         )}
                       </div>
                       {/* copy button */}
@@ -416,7 +562,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                             : "bg-white text-amber-800 border-amber-300 hover:bg-amber-50"
                         }`}
                       >
-                        {isCopied ? "Copied ✓" : "Copy"}
+                        {isCopied ? t.menuCopied : t.menuCopy}
                       </button>
                     </div>
                   </div>
@@ -425,7 +571,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
             </div>
 
             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
-              <p className="text-xs text-gray-400 text-center">Tap Copy to copy the code · Apply at checkout</p>
+              <p className="text-xs text-gray-400 text-center">{t.menuTapCopy}</p>
             </div>
           </div>
         </div>
@@ -450,12 +596,12 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
               <div className="flex items-center gap-2 mb-3">
                 <Stars rating={quickView.rating} />
                 <span className="text-xs font-semibold text-amber-700">{quickView.rating}</span>
-                <span className="text-xs text-gray-400">· {quickView.reviews} reviews</span>
+                <span className="text-xs text-gray-400">· {quickView.reviews} {t.menuReviews}</span>
               </div>
               <p className="text-sm text-gray-500 leading-relaxed mb-4">{quickView.desc}</p>
               {quickView.customizable && (
                 <div className="bg-amber-50 border border-amber-100 rounded-xl px-3 py-2 mb-4 text-xs text-amber-800 flex items-center gap-2">
-                  ✏️ <span>This item can be <strong>customized</strong> — add a note at checkout.</span>
+                  ✏️ <span>{t.menuCustomNote}</span>
                 </div>
               )}
               <div className="flex items-center justify-between">
@@ -471,7 +617,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                     onClick={() => { addItem(quickView.id); setQuickView(null); }}
                     className="bg-amber-900 hover:bg-amber-800 text-white px-6 py-2.5 rounded-xl text-sm font-bold transition"
                   >
-                    Add to Cart
+                    {t.menuAddToCart}
                   </button>
                 )}
               </div>
@@ -487,14 +633,14 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
             {/* header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <div>
-                <h3 className="text-base font-bold text-gray-900">Your Order</h3>
-                <p className="text-xs text-gray-400">{totalItems} item{totalItems > 1 ? "s" : ""} · {orderInfo.orderType === "delivery" ? "Delivery" : "Pickup"}</p>
+                <h3 className="text-base font-bold text-gray-900">{t.menuYourOrder}</h3>
+                <p className="text-xs text-gray-400">{totalItems} {totalItems > 1 ? t.menuItemsAdded : t.menuItemAdded} · {orderInfo.orderType === "delivery" ? t.chatDelivery : t.chatPickup}</p>
               </div>
               <button onClick={() => setShowCart(false)} className="text-gray-400 hover:text-gray-700 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition">&times;</button>
             </div>
 
             {/* items */}
-            <div className="divide-y divide-gray-50 max-h-72 overflow-y-auto">
+            <div className="divide-y divide-gray-50 max-h-48 overflow-y-auto">
               {Object.entries(cart).map(([id, qty]) => {
                 const item = allItems.find((i) => i.id === Number(id));
                 if (!item) return null;
@@ -517,31 +663,67 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
               })}
             </div>
 
+            {/* ── Combo offer banner ── */}
+            {appliedCombo && (
+              <div className="mx-4 mt-3 flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-50 border border-amber-200">
+                <span className="text-base">🎉</span>
+                <div className="flex-1">
+                  <p className="text-xs font-bold text-amber-800">{appliedCombo.label} Applied!</p>
+                  <p className="text-[10px] text-amber-600">{appliedCombo.name} — {appliedCombo.discount}% off</p>
+                </div>
+                <span className="text-xs font-bold text-green-600">−₹{Math.round(totalPrice * appliedCombo.discount / 100)}</span>
+              </div>
+            )}
+
+            {/* ── Delivery date picker ── */}
+            {orderInfo.orderType === "delivery" && (
+              <div className="px-6 pt-4 pb-2">
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">📅 Delivery Date</p>
+                <div className="flex gap-2">
+                  {["today", "tomorrow", "custom"].map(opt => (
+                    <button key={opt}
+                      onClick={() => setDeliveryDate(opt)}
+                      className={`flex-1 py-2 rounded-xl text-xs font-semibold border transition ${
+                        deliveryDate === opt
+                          ? "bg-amber-900 text-white border-amber-900"
+                          : "bg-white text-gray-600 border-gray-200 hover:border-amber-400"
+                      }`}>
+                      {opt === "today" ? "⚡ Today" : opt === "tomorrow" ? "📅 Tomorrow" : "🗓 Custom"}
+                    </button>
+                  ))}
+                </div>
+                {deliveryDate === "custom" && (
+                  <input type="date"
+                    value={customDate}
+                    min={new Date().toISOString().split("T")[0]}
+                    onChange={e => setCustomDate(e.target.value)}
+                    className="w-full mt-2 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-amber-400 transition"
+                  />
+                )}
+              </div>
+            )}
+
             {/* bill summary */}
             <div className="px-6 py-4 bg-gray-50 border-t border-gray-100">
               {/* promo apply row */}
               <div className="flex gap-2 mb-3">
                 <input
                   type="text"
-                  placeholder="Enter promo code"
+                  placeholder={t.menuEnterPromo}
                   value={appliedPromo ? appliedPromo.code : ""}
                   readOnly={!!appliedPromo}
                   onChange={() => {}}
                   className="flex-1 border border-dashed border-amber-300 rounded-xl px-3 py-2 text-xs font-bold text-amber-800 uppercase tracking-wider outline-none bg-white placeholder:text-gray-400 placeholder:font-normal placeholder:normal-case placeholder:tracking-normal"
                 />
                 {appliedPromo ? (
-                  <button
-                    onClick={() => setAppliedPromo(null)}
-                    className="text-xs font-bold px-3 py-2 rounded-xl bg-red-50 text-red-500 border border-red-200 hover:bg-red-100 transition"
-                  >
-                    Remove
+                  <button onClick={() => setAppliedPromo(null)}
+                    className="text-xs font-bold px-3 py-2 rounded-xl bg-red-50 text-red-500 border border-red-200 hover:bg-red-100 transition">
+                    {t.menuRemove}
                   </button>
                 ) : (
-                  <button
-                    onClick={() => setShowPromos(true)}
-                    className="text-xs font-bold px-3 py-2 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition whitespace-nowrap"
-                  >
-                    🏷️ Offers
+                  <button onClick={() => setShowPromos(true)}
+                    className="text-xs font-bold px-3 py-2 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition whitespace-nowrap">
+                    {t.menuOffers}
                   </button>
                 )}
               </div>
@@ -551,61 +733,109 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                   <span><strong>{appliedPromo.code}</strong> applied — {appliedPromo.desc}</span>
                 </div>
               )}
+
+              {/* Bill rows */}
               <div className="flex justify-between text-xs text-gray-500 mb-1">
-                <span>Item total</span><span>₹{totalPrice}</span>
+                <span>{t.menuItemTotal}</span><span>₹{totalPrice}</span>
               </div>
-              {orderInfo.orderType === "delivery" && (
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
-                  <span>Delivery fee</span><span className="text-green-600 font-medium">FREE</span>
+              {appliedCombo && (
+                <div className="flex justify-between text-xs text-green-600 mb-1">
+                  <span>🎉 Combo Discount ({appliedCombo.discount}%)</span>
+                  <span>−₹{Math.round(totalPrice * appliedCombo.discount / 100)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm font-bold text-gray-900 border-t border-gray-200 pt-2 mt-2">
-                <span>Total</span><span>₹{totalPrice}</span>
-              </div>
+              {orderInfo.orderType === "delivery" && (
+                <div className="flex justify-between text-xs text-gray-500 mb-1">
+                  <span>{t.menuDeliveryFee}</span><span className="text-green-600 font-medium">{t.menuFree}</span>
+                </div>
+              )}
+              {(() => {
+                const promoDiscount = appliedPromo
+                  ? (appliedPromo.code === "COMBO15"
+                      ? Math.round(totalPrice * 0.15)
+                      : appliedPromo.minOrder && totalPrice >= appliedPromo.minOrder
+                        ? parseInt(appliedPromo.desc.match(/₹(\d+)/)?.[1] || 0)
+                        : 0)
+                  : 0;
+                const comboDiscount = appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0;
+                const finalTotal = totalPrice - promoDiscount - comboDiscount;
+                return (
+                  <div className="flex justify-between text-sm font-bold text-gray-900 border-t border-gray-200 pt-2 mt-2">
+                    <span>Total</span><span>₹{finalTotal}</span>
+                  </div>
+                );
+              })()}
+            </div>
+
+            {/* Order notes */}
+            <div className="px-6 pb-3">
+              <textarea
+                placeholder="✏️ Special instructions (optional)..."
+                value={orderNotes}
+                onChange={e => setOrderNotes(e.target.value)}
+                rows={2}
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-xs outline-none focus:border-amber-400 transition resize-none text-gray-700 placeholder-gray-400"
+              />
             </div>
 
             {/* address */}
-            <div className="px-6 py-3 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-500">
+            <div className="px-6 pb-2 flex items-center gap-2 text-xs text-gray-500">
               <span>📍</span>
               <span className="truncate">{orderInfo.address}</span>
             </div>
 
             {/* place order */}
-            <div className="px-6 pb-6 pt-2">
+            <div className="px-6 pb-6 pt-1">
               {orderPlaced ? (
                 <div className="w-full bg-green-50 border border-green-200 rounded-xl py-4 text-center">
-                  <p className="text-green-700 font-bold text-sm">✅ Order Placed Successfully!</p>
-                  <p className="text-green-600 text-xs mt-1">Thank you, <strong>{orderInfo.customerName}</strong>! We'll contact you at <strong>{orderInfo.contact}</strong> shortly.</p>
+                  <p className="text-green-700 font-bold text-sm">{t.menuOrderSuccess}</p>
+                  <p className="text-green-600 text-xs mt-1">{t.menuOrderThanks}, <strong>{orderInfo.customerName}</strong>! {t.menuWillContact} <strong>{orderInfo.contact}</strong> {t.menuShortly}</p>
+                  {placedOrderId && (
+                    <button
+                      onClick={() => { setShowCart(false); setShowTracking(true); }}
+                      className="mt-3 text-xs font-bold px-4 py-2 rounded-xl bg-amber-900 text-white hover:bg-amber-800 transition">
+                      🔍 Track My Order
+                    </button>
+                  )}
                 </div>
               ) : (
                 <button
                   onClick={async () => {
                     setOrderLoading(true);
-                    const discount = appliedPromo
+                    const promoDiscount = appliedPromo
                       ? (appliedPromo.code === "COMBO15"
                           ? Math.round(totalPrice * 0.15)
                           : appliedPromo.minOrder && totalPrice >= appliedPromo.minOrder
                             ? parseInt(appliedPromo.desc.match(/₹(\d+)/)?.[1] || 0)
                             : 0)
                       : 0;
-                    const finalTotal = totalPrice - discount;
+                    const comboDiscount = appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0;
+                    const finalTotal = totalPrice - promoDiscount - comboDiscount;
+                    const deliveryDateStr = deliveryDate === "today" ? "Today"
+                      : deliveryDate === "tomorrow" ? "Tomorrow"
+                      : customDate || "";
                     const items = Object.entries(cart).map(([id, qty]) => {
                       const item = allItems.find((i) => i.id === Number(id));
                       return { id: Number(id), name: item?.name, price: item?.price, qty };
                     });
-                    await saveOrder({
-                      customerName: orderInfo.customerName || "Guest",
-                      contact:      orderInfo.contact || orderInfo.address,
-                      email:        orderInfo.email || "",
-                      orderType:    orderInfo.orderType,
-                      address:      orderInfo.address,
+                    const saved = await saveOrder({
+                      customerName:  orderInfo.customerName || "Guest",
+                      contact:       orderInfo.contact || orderInfo.address,
+                      email:         orderInfo.email || "",
+                      orderType:     orderInfo.orderType,
+                      address:       orderInfo.address,
                       items,
-                      subtotal:     totalPrice,
-                      discount,
-                      total:        finalTotal,
-                      promoCode:    appliedPromo?.code || "",
+                      subtotal:      totalPrice,
+                      discount:      promoDiscount,
+                      comboDiscount,
+                      total:         finalTotal,
+                      promoCode:     appliedPromo?.code || "",
+                      deliveryDate:  deliveryDateStr,
+                      notes:         orderNotes,
                     });
-                    setOrderLoading(false);
+                    if (saved?.id) setPlacedOrderId(saved.id);
+                    // apply referral credit if came via referral link
+                    applyReferralOnOrder(orderInfo.contact || orderInfo.address);                    setOrderLoading(false);
                     setOrderPlaced(true);
                     setShowCart(false);
                   }}
@@ -618,23 +848,95 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
                       </svg>
-                      Placing Order...
+                      {t.menuPlacing}
                     </>
                   ) : (
                     <>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
                       </svg>
-                      Place Order · ₹{totalPrice}
+                      {t.menuPlaceOrder} · ₹{totalPrice - (appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0)}
                     </>
                   )}
                 </button>
               )}
-              <p className="text-center text-xs text-gray-400 mt-2">You'll receive a confirmation shortly</p>
+              <p className="text-center text-xs text-gray-400 mt-2">{t.menuConfirmSoon}</p>
             </div>
           </div>
         </div>
       )}
+
+      {/* ── Abandoned Cart Popup ── */}
+      <AnimatePresence>
+        {showAbandonedCart && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[70]"
+              style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)" }}
+              onClick={() => setShowAbandonedCart(false)}
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              className="fixed inset-0 z-[71] flex items-center justify-center px-4"
+            >
+              <div className="bg-white rounded-3xl w-full max-w-sm overflow-hidden shadow-2xl">
+                {/* top */}
+                <div className="bg-gradient-to-r from-amber-800 to-amber-600 px-6 py-5 text-center">
+                  <div className="text-4xl mb-2">🛒</div>
+                  <h3 className="text-white font-bold text-base">Wait! Your cart is not empty</h3>
+                  <p className="text-amber-200 text-xs mt-1">You have {totalItems} item{totalItems > 1 ? "s" : ""} worth ₹{totalPrice}</p>
+                </div>
+                <div className="p-6 space-y-3">
+                  {/* items preview */}
+                  <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                    {Object.entries(cart).slice(0, 4).map(([id, qty]) => {
+                      const item = allItems.find(i => i.id === Number(id));
+                      if (!item) return null;
+                      return (
+                        <div key={id} className="shrink-0 w-14 h-14 rounded-xl overflow-hidden border border-amber-100 relative">
+                          <img src={item.image} alt={item.name} className="w-full h-full object-cover"/>
+                          {qty > 1 && (
+                            <span className="absolute bottom-0 right-0 bg-amber-900 text-white text-[9px] font-bold px-1 rounded-tl-lg">×{qty}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs text-gray-500 text-center">Don't let your treats go to waste! 🎂</p>
+                  <button
+                    onClick={() => setShowAbandonedCart(false)}
+                    className="w-full py-3 rounded-xl text-sm font-bold bg-amber-900 hover:bg-amber-800 text-white transition">
+                    Continue Shopping →
+                  </button>
+                  <button
+                    onClick={() => { setShowAbandonedCart(false); setShowCart(true); }}
+                    className="w-full py-3 rounded-xl text-sm font-bold border border-amber-200 text-amber-800 hover:bg-amber-50 transition">
+                    🛒 View Cart & Checkout
+                  </button>
+                  <button
+                    onClick={() => { setShowAbandonedCart(false); onClose(); }}
+                    className="w-full text-xs text-gray-400 hover:text-gray-600 transition py-1">
+                    Leave anyway
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* ── Order Tracking Modal ── */}
+      <AnimatePresence>
+        {showTracking && placedOrderId && (
+          <OrderTracking
+            orderId={placedOrderId}
+            onClose={() => setShowTracking(false)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
+import { useLocation, TRANSLATIONS } from "../context/LocationContext";
 
 function Footer() {
+  const { lang } = useLocation();
+  const t = TRANSLATIONS[lang] || TRANSLATIONS["en"];
   return (
     <footer style={{ background: "var(--bg3)", borderTop: "1px solid var(--border)" }}>
       <div className="max-w-6xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-10 md:mb-12">
 
           {/* Brand */}
           <div>

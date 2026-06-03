@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation, TRANSLATIONS } from "../context/LocationContext";
 
 function OrderModal({ onClose, onProceed }) {
+  const { lang } = useLocation();
+  const t = TRANSLATIONS[lang] || TRANSLATIONS["en"];
   const [name,  setName]  = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -122,8 +125,8 @@ function OrderModal({ onClose, onProceed }) {
         {/* header */}
         <div className="bg-amber-900 px-6 py-4 flex items-center justify-between">
           <div>
-            <h2 className="text-white font-bold text-base">Place Your Order</h2>
-            <p className="text-amber-300 text-xs mt-0.5">Fill in your details to continue</p>
+            <h2 className="text-white font-bold text-base">{t.modalTitle}</h2>
+            <p className="text-amber-300 text-xs mt-0.5">{t.modalSubtitle}</p>
           </div>
           <button
             onClick={onClose}
@@ -139,7 +142,7 @@ function OrderModal({ onClose, onProceed }) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">
-                Full Name *
+                {t.modalFullName} *
               </label>
               <input
                 type="text"
@@ -151,7 +154,7 @@ function OrderModal({ onClose, onProceed }) {
             </div>
             <div>
               <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">
-                Mobile *
+                {t.modalMobile} *
               </label>
               <div className="flex gap-1">
                 <span className="bg-gray-50 border border-gray-200 rounded-xl px-2 py-2.5 text-xs text-gray-500 font-semibold shrink-0">
@@ -167,7 +170,7 @@ function OrderModal({ onClose, onProceed }) {
                 />
               </div>
               {phone.length > 0 && !phoneOk && (
-                <p className="text-[10px] text-red-500 mt-0.5">Enter 10-digit number</p>
+                <p className="text-[10px] text-red-500 mt-0.5">{t.modalEnter10Digit}</p>
               )}
             </div>
           </div>
@@ -175,7 +178,7 @@ function OrderModal({ onClose, onProceed }) {
           {/* Email */}
           <div>
             <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">
-              Email *
+              {t.modalEmail} *
             </label>
             <input
               type="email"
@@ -189,20 +192,20 @@ function OrderModal({ onClose, onProceed }) {
           {/* Order Type */}
           <div>
             <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">
-              Order Type *
+              {t.modalOrderType} *
             </label>
             <div className="flex gap-2">
-              {["delivery", "pickup"].map((t) => (
+              {["delivery", "pickup"].map((tp) => (
                 <button
-                  key={t}
-                  onClick={() => setType(t)}
+                  key={tp}
+                  onClick={() => setType(tp)}
                   className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition ${
-                    type === t
+                    type === tp
                       ? "bg-amber-900 text-white border-amber-900"
                       : "bg-white text-gray-600 border-gray-200 hover:border-amber-500"
                   }`}
                 >
-                  {t === "delivery" ? "🚚 Delivery" : "🏪 Pickup"}
+                  {tp === "delivery" ? t.modalDelivery : t.modalPickup}
                 </button>
               ))}
             </div>
@@ -212,10 +215,8 @@ function OrderModal({ onClose, onProceed }) {
           {type === "delivery" && (
             <div>
               <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">
-                Delivery Address *
+                {t.modalDeliveryAddr} *
               </label>
-
-              {/* GPS */}
               <button
                 onClick={handleGPS}
                 disabled={gpsLoading}
@@ -231,25 +232,21 @@ function OrderModal({ onClose, onProceed }) {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
                     </svg>
-                    Detecting...
+                    {t.modalDetecting}
                   </>
                 ) : (
-                  <><span>📍</span> Use Current Location</>
+                  <><span>📍</span> {t.modalUseLocation}</>
                 )}
               </button>
-
-              {/* divider */}
               <div className="flex items-center gap-2 my-2">
                 <div className="flex-1 h-px bg-gray-100" />
-                <span className="text-[10px] text-gray-400 uppercase tracking-widest">or search</span>
+                <span className="text-[10px] text-gray-400 uppercase tracking-widest">{t.modalOrSearch}</span>
                 <div className="flex-1 h-px bg-gray-100" />
               </div>
-
-              {/* search box */}
               <div className="relative" ref={dropRef}>
                 <input
                   type="text"
-                  placeholder="Search area, street, city..."
+                  placeholder={t.modalSearchPlaceholder}
                   value={query}
                   onChange={(e) => {
                     setQuery(e.target.value);
@@ -315,7 +312,7 @@ function OrderModal({ onClose, onProceed }) {
           {type === "pickup" && (
             <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 text-xs text-amber-800 flex items-center gap-2">
               <span>🏪</span>
-              <span>You'll pick up from our store. No delivery address needed.</span>
+              <span>{t.modalPickupNote}</span>
             </div>
           )}
 
@@ -329,11 +326,11 @@ function OrderModal({ onClose, onProceed }) {
                 : "bg-amber-200 text-amber-400 cursor-not-allowed"
             }`}
           >
-            See Menu →
+            {t.modalSeeMenu}
           </button>
 
           <p className="text-[10px] text-gray-400 text-center pb-1">
-            Powered by OpenStreetMap · Free &amp; no login required
+            {t.modalPoweredBy}
           </p>
         </div>
       </div>

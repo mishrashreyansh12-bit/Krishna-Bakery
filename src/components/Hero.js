@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from "react";
+  import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { gsap } from "gsap";
+import { useLocation as useLocCtx, TRANSLATIONS } from "../context/LocationContext";
 
 // ── Premium cinematic bakery slides ─────────────────────────────────────────
 const SLIDES = [
@@ -49,6 +50,8 @@ const SLIDES = [
 ];
 
 export default function Hero({ onOrderClick }) {
+  const { lang } = useLocCtx();
+  const t = TRANSLATIONS[lang] || TRANSLATIONS["en"];
   const [slide, setSlide] = useState(0);
   const [prev,  setPrev]  = useState(null);
   const [dir,   setDir]   = useState(1);
@@ -160,13 +163,13 @@ export default function Hero({ onOrderClick }) {
           </AnimatePresence>
           <div className="h-px w-10" style={{ background: `linear-gradient(to right, ${current.accent}60, transparent)` }}/>
           <span className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "rgba(242,232,217,0.35)" }}>
-            Est. 2019 · Artisan Bakery
+            {t.heroSub}
           </span>
         </div>
 
         {/* headline */}
         <div className="overflow-hidden mb-1">
-          <h1 className="h-line1 text-[clamp(3.5rem,9vw,8.5rem)] font-light leading-[0.88]"
+          <h1 className="h-line1 text-[clamp(2.8rem,8vw,8.5rem)] font-light leading-[0.88]"
             style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.03em", opacity: 0, color: "var(--ivory)" }}>
             <AnimatePresence mode="wait">
               <motion.span key={`l1-${slide}`}
@@ -178,7 +181,7 @@ export default function Hero({ onOrderClick }) {
           </h1>
         </div>
         <div className="overflow-hidden mb-8">
-          <h1 className="h-line2 text-[clamp(3.5rem,9vw,8.5rem)] font-bold leading-[0.88] italic"
+          <h1 className="h-line2 text-[clamp(2.8rem,8vw,8.5rem)] font-bold leading-[0.88] italic"
             style={{
               fontFamily: "'Playfair Display', serif",
               letterSpacing: "-0.03em", opacity: 0,
@@ -221,14 +224,14 @@ export default function Hero({ onOrderClick }) {
               animate={{ x: ["-120%", "220%"] }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 1.5 }}
             />
-            <span className="relative">Order Now</span>
+            <span className="relative">{t.orderNow}</span>
           </motion.button>
 
           <motion.a href="#collection"
             whileHover={{ x: 5 }}
             className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.2em] transition"
             style={{ color: "rgba(242,232,217,0.4)" }}>
-            Explore Menu
+            {t.exploreMenu}
             <motion.svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"
               animate={{ x: [0, 4, 0] }} transition={{ duration: 2, repeat: Infinity }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 8l4 4m0 0l-4 4m4-4H3"/>
@@ -237,9 +240,9 @@ export default function Hero({ onOrderClick }) {
         </div>
 
         {/* stats */}
-        <div className="flex items-center gap-10 mt-14 pt-8"
+        <div className="flex flex-wrap items-center gap-6 md:gap-10 mt-10 md:mt-14 pt-6 md:pt-8"
           style={{ borderTop: "1px solid rgba(242,232,217,0.07)" }}>
-          {[["500+","Customers"],["50+","Items"],["4.9★","Rating"],["6+","Years"]].map(([n,l]) => (
+          {[["500+", t.heroStatCustomers],["50+", t.heroStatItems],["4.9★", t.heroStatRating],["6+", t.heroStatYears]].map(([n,l]) => (
             <div key={l} className="h-stat" style={{ opacity: 0 }}>
               <p className="text-xl font-bold" style={{
                 background: "linear-gradient(135deg, #D4A843, #F0CC6E)",

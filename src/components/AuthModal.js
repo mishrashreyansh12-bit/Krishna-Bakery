@@ -11,6 +11,7 @@ function AuthModal({ onClose, onSuccess }) {
   const [msg,      setMsg]      = useState({ type: "", text: "" });
 
   async function handleGoogleLogin() {
+    if (loading) return;
     setLoading(true);
     setMsg({ type: "", text: "" });
     const { error } = await supabase.auth.signInWithOAuth({
@@ -27,7 +28,7 @@ function AuthModal({ onClose, onSuccess }) {
   }
 
   async function handleSubmit() {
-    if (!email || !password) return;
+    if (!email || !password || loading) return;
     setLoading(true);
     setMsg({ type: "", text: "" });
 
@@ -38,7 +39,10 @@ function AuthModal({ onClose, onSuccess }) {
         options: { data: { full_name: name } },
       });
       if (error) {
-        setMsg({ type: "error", text: error.message });
+        const msg = error.message.toLowerCase().includes("rate") || error.message.toLowerCase().includes("too many")
+          ? "⏳ Too many attempts. Please wait a minute and try again."
+          : error.message;
+        setMsg({ type: "error", text: msg });
       } else {
         setMsg({ type: "success", text: "✅ Account created! ₹70 discount applied to your first order." });
         setTimeout(() => {
@@ -48,7 +52,10 @@ function AuthModal({ onClose, onSuccess }) {
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        setMsg({ type: "error", text: error.message });
+        const msg = error.message.toLowerCase().includes("rate") || error.message.toLowerCase().includes("too many")
+          ? "⏳ Too many attempts. Please wait a minute and try again."
+          : error.message;
+        setMsg({ type: "error", text: msg });
       } else {
         onSuccess?.();
       }
@@ -186,6 +193,7 @@ function AuthModal({ onClose, onSuccess }) {
                   placeholder="Full Name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  autoComplete="name"
                   className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition"
                   style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
                   onFocus={(e) => e.target.style.borderColor = "rgba(212,168,67,0.5)"}
@@ -197,6 +205,7 @@ function AuthModal({ onClose, onSuccess }) {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                autoComplete="email"
                 className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
                 onFocus={(e) => e.target.style.borderColor = "rgba(212,168,67,0.5)"}
@@ -208,6 +217,7 @@ function AuthModal({ onClose, onSuccess }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                autoComplete={tab === "register" ? "new-password" : "current-password"}
                 className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 outline-none transition"
                 style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}
                 onFocus={(e) => e.target.style.borderColor = "rgba(212,168,67,0.5)"}

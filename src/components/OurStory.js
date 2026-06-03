@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useInView, useScroll, useTransform } from "framer-motion";
+import { useLocation, TRANSLATIONS } from "../context/LocationContext";
 
 const MILESTONES = [
   { year: "2019", title: "Where It All Began",     desc: "One oven, two bakers, one dream — to bake something honest.", icon: "🔥" },
@@ -8,12 +9,6 @@ const MILESTONES = [
   { year: "2022", title: "Expanding the Family",    desc: "5 new locations. Bigger kitchen, same original recipes.", icon: "📍" },
   { year: "2023", title: "Going Beyond the City",   desc: "3 new cities. Velvet Cheesecake won a regional award.", icon: "🏆" },
   { year: "2024–25", title: "20 Locations & Counting", desc: "Every item still baked fresh, every day — just like day one.", icon: "🌟" },
-];
-
-const VALUES = [
-  { icon: "🌾", title: "Fresh Every Day",  desc: "Nothing pre-made. Every item baked fresh each morning." },
-  { icon: "🤍", title: "No Shortcuts",     desc: "Real butter, real chocolate, real fruit. No artificial flavours." },
-  { icon: "👨‍🍳", title: "Trained Bakers", desc: "Every baker completes a 3-month programme before touching an order." },
 ];
 
 function FadeIn({ children, delay = 0, className = "" }) {
@@ -30,6 +25,15 @@ function FadeIn({ children, delay = 0, className = "" }) {
 }
 
 export default function OurStory() {
+  const { lang } = useLocation();
+  const t = TRANSLATIONS[lang] || TRANSLATIONS["en"];
+
+  const VALUES = [
+    { icon: "🌾", title: t.storyFreshTitle,      desc: t.storyFreshDesc      },
+    { icon: "🤍", title: t.storyNoShortcuts,     desc: t.storyNoShortcutsDesc },
+    { icon: "👨‍🍳", title: t.storyBakers,         desc: t.storyBakersDesc     },
+  ];
+
   const bannerRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: bannerRef, offset: ["start end", "end start"] });
   const bannerY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
@@ -53,18 +57,17 @@ export default function OurStory() {
         <div className="relative z-10 text-center px-6">
           <FadeIn>
             <p className="text-[10px] uppercase tracking-[0.5em] mb-5"
-              style={{ color: "rgba(212,168,67,0.6)" }}>Est. 2019</p>
+              style={{ color: "rgba(212,168,67,0.6)" }}>{t.storyEst}</p>
             <h2 className="text-5xl md:text-8xl font-light text-white mb-6"
               style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}>
-              Our <em className="font-bold italic" style={{
+              {t.storyTitle.split(" ")[0]} <em className="font-bold italic" style={{
                 background: "linear-gradient(135deg, #C9973A, #F0CC6E)",
                 WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text"
-              }}>Story</em>
+              }}>{t.storyTitle.split(" ").slice(1).join(" ")}</em>
             </h2>
             <p className="text-sm md:text-base font-light max-w-xl mx-auto leading-relaxed"
               style={{ color: "rgba(255,255,255,0.45)" }}>
-              Six years ago, we started with a single oven and a belief —<br />
-              that great baking doesn't need shortcuts.
+              {t.storySubtitle}
             </p>
           </FadeIn>
         </div>
@@ -73,7 +76,7 @@ export default function OurStory() {
       {/* ── Stats ── */}
       <div className="py-16 px-6" style={{ background: "rgba(212,168,67,0.06)", borderTop: "1px solid rgba(212,168,67,0.1)", borderBottom: "1px solid rgba(212,168,67,0.1)" }}>
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-          {[["6+","Years"],["20+","Outlets"],["10","Cities"],["50K+","Customers"]].map(([v,l], i) => (
+          {[["6+", t.storyYears],["20+", t.storyOutlets],["10", t.storyCities],["50K+", t.storyCustomers]].map(([v,l], i) => (
             <FadeIn key={l} delay={i * 0.1} className="text-center">
               <p className="text-4xl font-bold mb-1" style={{
                 background: "linear-gradient(135deg, #D4A843, #F5D78E)",
@@ -88,12 +91,12 @@ export default function OurStory() {
       {/* ── Timeline ── */}
       <div className="py-28 px-6 max-w-4xl mx-auto">
         <FadeIn className="text-center mb-20">
-          <p className="text-[10px] uppercase tracking-[0.5em] mb-4" style={{ color: "rgba(212,168,67,0.6)" }}>The Journey</p>
+          <p className="text-[10px] uppercase tracking-[0.5em] mb-4" style={{ color: "rgba(212,168,67,0.6)" }}>{t.storyJourney}</p>
           <h3 className="text-4xl md:text-5xl font-light text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
-            6 Years, <em className="font-bold italic" style={{
+            {t.storyPassion.replace(t.storyPassionItalic, "").trim()}, <em className="font-bold italic" style={{
               background: "linear-gradient(135deg, #C9973A, #F0CC6E)",
               WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text"
-            }}>One Passion</em>
+            }}>{t.storyPassionItalic}</em>
           </h3>
         </FadeIn>
 
@@ -113,7 +116,7 @@ export default function OurStory() {
                   </div>
 
                   {/* card */}
-                  <div className={`ml-16 md:ml-0 md:w-[44%] ${i % 2 === 0 ? "md:mr-auto md:pr-14" : "md:ml-auto md:pl-14"}`}>
+                  <div className={`ml-14 md:ml-0 md:w-[44%] ${i % 2 === 0 ? "md:mr-auto md:pr-14" : "md:ml-auto md:pl-14"}`}>
                     <div className="rounded-2xl p-6 transition-all duration-300 hover:border-amber-400/20"
                       style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}>
                       <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full mb-3 inline-block"
@@ -160,11 +163,11 @@ export default function OurStory() {
           <div className="text-6xl mb-8 opacity-20" style={{ color: "#D4A843", fontFamily: "Georgia, serif" }}>"</div>
           <blockquote className="text-2xl md:text-4xl font-light text-white leading-relaxed mb-8"
             style={{ fontFamily: "'Playfair Display', serif" }}>
-            Every cake we bake carries six years of learning, love, and the relentless pursuit of the perfect bite.
+            {t.storyQuote}
           </blockquote>
           <div className="flex items-center justify-center gap-4">
             <div className="h-px w-12" style={{ background: "linear-gradient(to right, transparent, rgba(212,168,67,0.5))" }} />
-            <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(212,168,67,0.5)" }}>Krishna Bakers · Since 2019</p>
+            <p className="text-xs uppercase tracking-widest" style={{ color: "rgba(212,168,67,0.5)" }}>{t.storySince}</p>
             <div className="h-px w-12" style={{ background: "linear-gradient(to left, transparent, rgba(212,168,67,0.5))" }} />
           </div>
         </FadeIn>

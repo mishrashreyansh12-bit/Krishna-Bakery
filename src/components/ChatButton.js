@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
 import { saveChatLead } from "../services/leadService";
+import { useLocation, TRANSLATIONS } from "../context/LocationContext";
 
 // ─── WhatsApp number (India +91) ──────────────────────────────────────────────
 const WHATSAPP_NUMBER = "919131401594";
@@ -55,18 +56,29 @@ function userMsg(text) {
 
 const INITIAL_MESSAGES = [
   botMsg(
-    "Hi there! 👋 Welcome to **Krishna Bakers**.\nI'm your virtual baker assistant — here to help you find the perfect treat! 🎂\n\nYou can also tap the **WhatsApp** button above to chat directly with our baker.",
+    "Hi there! 👋 Welcome to **Krishna Bakers**.\nI'm Krishna Assistant — here to help you find the perfect treat! 🎂",
     { step: "greeting" }
   ),
   botMsg("To get started, may I know your **name**? 😊"),
 ];
 
 export default function ChatButton({ onOrderNow }) {
+  const { lang } = useLocation();
+  const t = TRANSLATIONS[lang] || TRANSLATIONS["en"];
+
+  const INITIAL_MESSAGES = [
+    botMsg(t.chatWelcome, { step: "greeting" }),
+    botMsg(t.chatAskName),
+  ];
+
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
-  const [step, setStep] = useState("name"); // current expected input step
+  const [messages, setMessages] = useState(() => [
+    botMsg(t.chatWelcome, { step: "greeting" }),
+    botMsg(t.chatAskName),
+  ]);
+  const [step, setStep] = useState("name");
   const [input, setInput] = useState("");
-  const [userData, setUserData] = useState({ name: "", contact: "" });
+  const [userData, setUserData] = useState({ name: "", contact: "", address: "", orderType: "delivery" });
 
   const bottomRef = useRef(null);
 
@@ -90,8 +102,8 @@ export default function ChatButton({ onOrderNow }) {
       setUserData((u) => ({ ...u, name }));
       addMessages([
         userMsg(val),
-        botMsg(`Nice to meet you, **${name}**! 😊`),
-        botMsg("Could you share your **email or phone number** so we can reach you if needed?"),
+        botMsg(`${t.chatMeetYou}, **${name}**! 😊`),
+        botMsg(t.chatAskContact),
       ]);
       setStep("contact");
       return;
@@ -111,9 +123,7 @@ export default function ChatButton({ onOrderNow }) {
       if (!isValidEmail && !isValidPhone) {
         addMessages([
           userMsg(val),
-          botMsg(
-            `⚠️ That doesn't look valid.\n\nPlease enter:\n• A valid **email** — e.g. name@gmail.com\n• Or a **10-digit mobile number** — e.g. 9876543210`
-          ),
+          botMsg(t.chatInvalidContact),
         ]);
         setInput("");
         return;
@@ -122,13 +132,31 @@ export default function ChatButton({ onOrderNow }) {
       const displayContact = isValidPhone ? `+91 ${cleanPhone}` : contact;
       setUserData((u) => ({ ...u, contact: displayContact }));
 
-      // ── Save lead to Supabase ──────────────────────────────────────────────
       saveChatLead(userData.name, displayContact);
       addMessages([
         userMsg(val),
-        botMsg(`Perfect! ✅ We'll reach you at **${displayContact}**.`),
+        botMsg(`✅ ${t.chatReachAt} **${displayContact}**.`),
+        botMsg(t.chatAskType, { step: "order_type" }),
+      ]);
+      setStep("order_type");
+      return;
+    }
+
+    if (step === "address") {
+      const address = val.trim();
+      if (address.length < 5) {
+        addMessages([
+          userMsg(val),
+          botMsg(t.chatInvalidAddress),
+        ]);
+        return;
+      }
+      setUserData((u) => ({ ...u, address }));
+      addMessages([
+        userMsg(val),
+        botMsg(`📍 ${t.chatDeliverTo} **${address}**`),
         botMsg(
-          `Now, what are you in the mood for today, **${userData.name}**? 🍰\nPick a category or search below 👇`,
+          `${t.chatAskCategory.replace("?", `, **${userData.name}**? 🍰\n`)}`,
           { step: "category" }
         ),
       ]);
@@ -148,12 +176,12 @@ export default function ChatButton({ onOrderNow }) {
       addMessages([userMsg(val)]);
       if (found.length > 0) {
         addMessages([
-          botMsg(`Here's what I found for "**${val}**" 🔍`, { products: found }),
+          botMsg(`${t.chatSearchResult} "**${val}**" 🔍`, { products: found }),
         ]);
         setStep("product_detail");
       } else {
         addMessages([
-          botMsg(`Hmm, I couldn't find anything for "**${val}**". Try picking a category below 👇`, { step: "category" }),
+          botMsg(`${t.chatNoResult} "**${val}**". ${t.chatTryCategory}`, { step: "category" }),
         ]);
         setStep("category");
       }
@@ -192,7 +220,7 @@ export default function ChatButton({ onOrderNow }) {
     if (action === "order") {
       // Close chat and open OrderMenu with this product highlighted
       setIsOpen(false);
-      if (onOrderNow) onOrderNow(product);
+      if (onOrderNow) onOrderNow(product, userData);
     } else if (action === "more") {
       addMessages([
         userMsg("Explore More"),
@@ -206,7 +234,7 @@ export default function ChatButton({ onOrderNow }) {
   function handleRestart() {
     setMessages(INITIAL_MESSAGES);
     setStep("name");
-    setUserData({ name: "", contact: "" });
+    setUserData({ name: "", contact: "", address: "", orderType: "delivery" });
     setInput("");
   }
 
@@ -236,6 +264,41 @@ export default function ChatButton({ onOrderNow }) {
                   .replace(/\n/g, "<br/>"),
               }}
             />
+          )}
+
+          {/* Order Type — Delivery or Pickup */}
+          {msg.step === "order_type" && (
+            <div className="flex gap-2 mt-2">
+              <button
+                onClick={() => {
+                  setUserData((u) => ({ ...u, orderType: "delivery" }));
+                  addMessages([
+                    userMsg(`🚚 ${t.chatDelivery}`),
+                    botMsg(t.chatAskAddress),
+                  ]);
+                  setStep("address");
+                }}
+                className="flex-1 flex flex-col items-center gap-1 bg-amber-50 border border-amber-200 rounded-xl px-3 py-3 hover:bg-amber-100 transition"
+              >
+                <span className="text-2xl">🚚</span>
+                <span className="text-xs font-bold text-amber-900">{t.chatDelivery}</span>
+              </button>
+              <button
+                onClick={() => {
+                  setUserData((u) => ({ ...u, orderType: "pickup", address: "Store Pickup" }));
+                  addMessages([
+                    userMsg(`🏪 ${t.chatPickup}`),
+                    botMsg(t.chatPickupMsg),
+                    botMsg(t.chatAskCategory, { step: "category" }),
+                  ]);
+                  setStep("category");
+                }}
+                className="flex-1 flex flex-col items-center gap-1 bg-stone-50 border border-stone-200 rounded-xl px-3 py-3 hover:bg-stone-100 transition"
+              >
+                <span className="text-2xl">🏪</span>
+                <span className="text-xs font-bold text-stone-700">{t.chatPickup}</span>
+              </button>
+            </div>
           )}
 
           {/* Category chips — premium grid */}
@@ -388,47 +451,25 @@ export default function ChatButton({ onOrderNow }) {
 
           {/* Header */}
           <div className="shrink-0" style={{ background: "linear-gradient(135deg, #78350f 0%, #92400e 60%, #b45309 100%)" }}>
-            {/* top row */}
-            <div className="px-5 pt-4 pb-3 flex items-center justify-between">
+            <div className="px-5 pt-4 pb-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center text-xl shadow-inner">
-                    🧑‍🍳
+                    ✨
                   </div>
                   <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-amber-900 rounded-full" />
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm tracking-wide">Krishna Bakers</p>
+                  <p className="text-white font-bold text-sm tracking-wide">Krishna Assistant</p>
                   <p className="text-amber-200 text-[11px]">● Online · Typically replies instantly</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                {/* WhatsApp button in header */}
-                <button
-                  onClick={() => openWhatsApp(userData.name, userData.contact)}
-                  title="Chat on WhatsApp"
-                  className="bg-green-500 hover:bg-green-400 text-white p-2 rounded-full transition shadow-md flex items-center justify-center"
-                >
-                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                    <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L0 24l6.335-1.508A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.727.977.994-3.634-.235-.374A9.818 9.818 0 1112 21.818z"/>
-                  </svg>
-                </button>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-white/70 hover:text-white text-xl leading-none transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-            {/* WhatsApp label strip */}
-            <div className="px-5 pb-3 flex items-center gap-2">
-              <svg className="w-3.5 h-3.5 text-green-400" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
-                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.855L0 24l6.335-1.508A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.727.977.994-3.634-.235-.374A9.818 9.818 0 1112 21.818z"/>
-              </svg>
-              <span className="text-green-300 text-[11px] font-medium">+91 91314 01594 · Tap 🟢 to WhatsApp us directly</span>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="text-white/70 hover:text-white text-xl leading-none transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10"
+              >
+                ✕
+              </button>
             </div>
           </div>
 
@@ -449,9 +490,12 @@ export default function ChatButton({ onOrderNow }) {
                 placeholder={
                   step === "name" ? "Type your name..."
                   : step === "contact" ? "Email or phone number..."
+                  : step === "address" ? "Area, street, city..."
+                  : step === "order_type" ? "👆 Choose Delivery or Pickup above"
                   : "Search cakes, pastries..."
                 }
-                className="flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-amber-400 transition bg-gray-50"
+                disabled={step === "order_type"}
+                className={`flex-1 border border-gray-200 rounded-xl px-3 py-2 text-sm text-gray-900 placeholder-gray-400 outline-none focus:border-amber-400 transition ${step === "order_type" ? "bg-gray-100 cursor-not-allowed" : "bg-white"}`}
               />
               <button
                 onClick={handleSend}
@@ -519,7 +563,7 @@ export default function ChatButton({ onOrderNow }) {
 
         {/* text */}
         <div className="text-left">
-          <p className="text-[11px] font-bold text-white leading-tight tracking-wide">Chat with our Baker</p>
+          <p className="text-[11px] font-bold text-white leading-tight tracking-wide">Krishna Assistant</p>
           <p className="text-[9px] font-medium" style={{ color: "rgba(212,168,67,0.6)" }}>
             {isOpen ? "Close chat" : "Typically replies instantly"}
           </p>
