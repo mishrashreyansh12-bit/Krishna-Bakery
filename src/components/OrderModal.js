@@ -120,7 +120,7 @@ function OrderModal({ onClose, onProceed }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
-      <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
+      <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden mx-2">
 
         {/* header */}
         <div className="bg-amber-900 px-6 py-4 flex items-center justify-between">
@@ -139,7 +139,7 @@ function OrderModal({ onClose, onProceed }) {
         <div className="px-6 py-5 space-y-4 overflow-y-auto max-h-[78vh]">
 
           {/* Name + Phone */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 xs:grid-cols-2 gap-3">
             <div>
               <label className="block text-[10px] font-bold text-gray-400 mb-1 uppercase tracking-wider">
                 {t.modalFullName} *

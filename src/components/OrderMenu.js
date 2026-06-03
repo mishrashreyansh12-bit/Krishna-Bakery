@@ -226,7 +226,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
     .filter((cat) => cat.items.length > 0);
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#FAF9F6] flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-[#FAF9F6] flex flex-col overflow-hidden w-full max-w-full">
 
       {/* ── Top Bar ── */}
       <div className="bg-white border-b border-gray-100 px-4 md:px-8 py-3 flex items-center justify-between shadow-sm shrink-0">
@@ -336,7 +336,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
               </div>
 
               {/* items grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-5">
                 {cat.items.map((item) => {
                   const isHighlighted = item.id === highlightProductId;
                   const qty = cart[item.id] || 0;

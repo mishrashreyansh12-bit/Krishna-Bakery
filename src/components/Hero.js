@@ -146,7 +146,7 @@ export default function Hero({ onOrderClick }) {
 
       {/* ── Main content ── */}
       <motion.div style={{ opacity: fadeOut }}
-        className="relative z-20 h-full flex flex-col justify-center px-8 md:px-14 lg:px-20 max-w-screen-xl mx-auto">
+        className="relative z-20 h-full flex flex-col justify-center px-5 sm:px-8 md:px-14 lg:px-20 max-w-screen-xl mx-auto">
 
         {/* eyebrow */}
         <div className="h-eyebrow flex items-center gap-3 mb-7" style={{ opacity: 0 }}>
@@ -212,12 +212,12 @@ export default function Hero({ onOrderClick }) {
         </AnimatePresence>
 
         {/* CTAs */}
-        <div className="h-cta flex items-center gap-5" style={{ opacity: 0 }}>
+        <div className="h-cta flex flex-wrap items-center gap-3" style={{ opacity: 0 }}>
           <motion.button
             whileHover={{ scale: 1.05, boxShadow: `0 0 50px ${current.accent}40` }}
             whileTap={{ scale: 0.96 }}
             onClick={onOrderClick}
-            className="relative group px-9 py-4 rounded-full text-[11px] font-bold uppercase tracking-[0.2em] overflow-hidden"
+            className="relative group px-6 py-3.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em] overflow-hidden"
             style={{ background: "linear-gradient(135deg, #D4A843, #8B6914)", color: "#0a0800" }}>
             <motion.span className="absolute inset-0 -skew-x-12"
               style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent)" }}

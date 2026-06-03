@@ -148,7 +148,7 @@ function ProductCard({ product, currency, index, onProductClick }) {
         onMouseLeave={onMouseLeave}
         onClick={() => onProductClick?.(product.id)}
         className="relative flex-shrink-0 cursor-pointer group"
-        style={{ width: "min(240px, 72vw)", transformStyle: "preserve-3d" }}
+        style={{ width: "100%", maxWidth: "240px", transformStyle: "preserve-3d" }}
       >
         {/* image */}
         <div className="relative overflow-hidden rounded-2xl mb-4"
@@ -452,9 +452,9 @@ export default function Collection({ onProductClick, jumpCategory, onJumpDone })
   })();
 
   return (
-    <section id="collection" className="py-28 overflow-hidden"
+    <section id="collection" className="py-14 md:py-28 overflow-hidden"
       style={{ background: "linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%)" }}>
-      <div className="max-w-screen-xl mx-auto px-6 md:px-12">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-12">
 
         {/* ── Cinematic Header ── */}
         <div ref={headRef} className="mb-16">
@@ -470,7 +470,7 @@ export default function Collection({ onProductClick, jumpCategory, onJumpDone })
               <motion.h2
                 initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 1, delay: 0.1 }}
-                className="text-4xl md:text-6xl font-light text-white leading-tight"
+                className="text-3xl sm:text-4xl md:text-6xl font-light text-white leading-tight"
                 style={{ fontFamily: "'Playfair Display', serif" }}>
                 The Signature
                 <br />
@@ -591,7 +591,7 @@ export default function Collection({ onProductClick, jumpCategory, onJumpDone })
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5 mb-16">
+            className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 mb-16">
             {filtered.map((p, i) => (
               <ProductCard key={p.id} product={p} currency={currency} index={i} onProductClick={onProductClick} />
             ))}

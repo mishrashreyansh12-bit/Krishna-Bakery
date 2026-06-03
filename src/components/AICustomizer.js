@@ -468,7 +468,7 @@ export default function AICustomizer() {
   return (
     <section id="ai-customizer" ref={ref}
       style={{ background: "linear-gradient(180deg, #0a0804 0%, #0d0b06 100%)", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
-      <div className="max-w-screen-xl mx-auto px-6 md:px-12 lg:px-20 py-14 md:py-24">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-12 lg:px-20 py-10 md:py-24">
 
         {/* header */}
         <motion.div initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -515,7 +515,7 @@ export default function AICustomizer() {
         {/* tab content */}
         <motion.div initial={{ opacity: 0 }} animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="max-w-3xl mx-auto rounded-3xl p-8"
+          className="max-w-3xl mx-auto rounded-2xl sm:rounded-3xl p-4 sm:p-8"
           style={{
             background: "rgba(255,255,255,0.02)",
             border: "1px solid rgba(212,168,67,0.1)",

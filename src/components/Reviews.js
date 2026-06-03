@@ -304,20 +304,20 @@ export default function Reviews() {
   });
 
   return (
-    <section id="reviews" className="py-24 px-6" style={{ background: "#0a0804" }}>
+    <section id="reviews" className="py-12 md:py-24 px-4 sm:px-6" style={{ background: "#0a0804" }}>
       <div className="max-w-5xl mx-auto">
 
         {/* Heading */}
         <div className="text-center mb-14">
           <p className="text-xs uppercase tracking-[0.4em] font-semibold mb-3" style={{ color: "rgba(212,168,67,0.6)" }}>What People Say</p>
-          <h2 className="text-4xl md:text-5xl mb-4 font-light text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <h2 className="text-3xl md:text-5xl mb-4 font-light text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
             Real <em className="font-bold italic" style={{ background: "linear-gradient(135deg,#C9973A,#F0CC6E)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>Reviews</em>
           </h2>
           <p className="text-sm max-w-md mx-auto" style={{ color: "rgba(255,255,255,0.3)" }}>From our customers — unfiltered, unedited, and straight from the heart.</p>
         </div>
 
         {/* Rating Summary */}
-        <div className="rounded-2xl p-6 md:p-8 mb-10 flex flex-col md:flex-row items-center gap-8"
+        <div className="rounded-2xl p-4 md:p-8 mb-10 flex flex-col md:flex-row items-center gap-5 md:gap-8"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
           <div className="text-center shrink-0">
             <p className="text-5xl md:text-7xl font-bold" style={{ background: "linear-gradient(135deg,#D4A843,#F5D78E)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text" }}>{AVG_RATING}</p>
@@ -362,7 +362,7 @@ export default function Reviews() {
               Follow us
             </a>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {REELS.map((r) => (
               <InstaCard key={r.shortcode} {...r} />
             ))}

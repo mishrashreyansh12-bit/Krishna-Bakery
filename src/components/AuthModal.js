@@ -69,7 +69,7 @@ function AuthModal({ onClose, onSuccess }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[200] flex items-center justify-center px-4"
+        className="fixed inset-0 z-[200] flex items-center justify-center px-3 sm:px-4"
         style={{ background: "rgba(8,7,5,0.92)", backdropFilter: "blur(16px)" }}
       >
         <motion.div
@@ -77,7 +77,7 @@ function AuthModal({ onClose, onSuccess }) {
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.88, opacity: 0, y: 30 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-sm rounded-3xl overflow-hidden relative"
+          className="w-full max-w-sm rounded-2xl sm:rounded-3xl overflow-hidden relative"
           style={{
             background: "linear-gradient(160deg, #1a1508 0%, #0f0d08 100%)",
             border: "1px solid rgba(212,168,67,0.2)",

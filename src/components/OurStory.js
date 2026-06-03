@@ -42,7 +42,7 @@ export default function OurStory() {
     <section id="our-story" style={{ background: "var(--bg)" }}>
 
       {/* ── Cinematic banner ── */}
-      <div ref={bannerRef} className="relative h-[70vh] overflow-hidden flex items-center justify-center">
+      <div ref={bannerRef} className="relative h-[50vh] sm:h-[70vh] overflow-hidden flex items-center justify-center">
         <motion.div className="absolute inset-0" style={{ y: bannerY }}>
           <img
             src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=90&w=2400"
@@ -58,7 +58,7 @@ export default function OurStory() {
           <FadeIn>
             <p className="text-[10px] uppercase tracking-[0.5em] mb-5"
               style={{ color: "rgba(212,168,67,0.6)" }}>{t.storyEst}</p>
-            <h2 className="text-5xl md:text-8xl font-light text-white mb-6"
+            <h2 className="text-4xl sm:text-5xl md:text-8xl font-light text-white mb-6"
               style={{ fontFamily: "'Playfair Display', serif", letterSpacing: "-0.02em" }}>
               {t.storyTitle.split(" ")[0]} <em className="font-bold italic" style={{
                 background: "linear-gradient(135deg, #C9973A, #F0CC6E)",
@@ -89,7 +89,7 @@ export default function OurStory() {
       </div>
 
       {/* ── Timeline ── */}
-      <div className="py-28 px-6 max-w-4xl mx-auto">
+      <div className="py-12 md:py-28 px-4 sm:px-6 max-w-4xl mx-auto">
         <FadeIn className="text-center mb-20">
           <p className="text-[10px] uppercase tracking-[0.5em] mb-4" style={{ color: "rgba(212,168,67,0.6)" }}>{t.storyJourney}</p>
           <h3 className="text-4xl md:text-5xl font-light text-white" style={{ fontFamily: "'Playfair Display', serif" }}>

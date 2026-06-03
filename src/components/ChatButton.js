@@ -442,11 +442,11 @@ export default function ChatButton({ onOrderNow }) {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end space-y-3">
+    <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-50 flex flex-col items-end space-y-3">
 
       {/* ── Chat Window ── */}
       {isOpen && (
-        <div className="bg-white rounded-2xl shadow-2xl w-80 sm:w-96 border border-gray-100 flex flex-col overflow-hidden"
+        <div className="bg-white rounded-2xl shadow-2xl w-[calc(100vw-2rem)] sm:w-80 md:w-96 max-w-sm border border-gray-100 flex flex-col overflow-hidden"
           style={{ height: "580px" }}>
 
           {/* Header */}
