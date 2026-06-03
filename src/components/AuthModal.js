@@ -17,12 +17,12 @@ function AuthModal({ onClose, onSuccess }) {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: process.env.REACT_APP_SITE_URL || window.location.origin,
         queryParams: { prompt: "select_account" },
       },
     });
     if (error) {
-      setMsg({ type: "error", text: "Google login setup pending. Please use email & password for now." });
+      setMsg({ type: "error", text: "Google login failed: " + error.message });
     }
     setLoading(false);
   }
