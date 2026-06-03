@@ -325,7 +325,7 @@ export default function Navbar({ onOrderClick, onLoginClick, user, onLogout, onC
         onLoginClick={onLoginClick}
         onOrderClick={(type) => {
           setAccountOpen(false);
-          setShowOrderModal(true);
+          onOrderClick();
         }}
       />
     </>
