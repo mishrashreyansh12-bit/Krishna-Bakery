@@ -155,8 +155,7 @@ function AuthModal({ onClose, onSuccess }) {
               ))}
             </div>
 
-            {/* Google — hidden until OAuth configured */}
-            {false && (
+            {/* Google — prominent */}
             <motion.button
               whileHover={{ scale: 1.02, boxShadow: "0 0 20px rgba(255,255,255,0.08)" }}
               whileTap={{ scale: 0.98 }}
@@ -177,16 +176,13 @@ function AuthModal({ onClose, onSuccess }) {
               </svg>
               Continue with Google
             </motion.button>
-            )}
 
-            {/* divider — shown only when Google is active */}
-            {false && (
+            {/* divider */}
             <div className="flex items-center gap-3">
               <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.07)" }} />
               <span className="text-[10px] uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.2)" }}>or</span>
               <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.07)" }} />
             </div>
-            )}
 
             {/* Fields */}
             <div className="space-y-3">
