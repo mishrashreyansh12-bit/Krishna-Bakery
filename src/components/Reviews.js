@@ -381,7 +381,7 @@ export default function Reviews() {
         </div>
 
         {/* Review Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-8">
           {filtered.slice(0, visibleCount).map((r) => (
             <ReviewCard key={r.id} review={r} />
           ))}

@@ -21,3 +21,25 @@ h1, h2, h3, h4, p, span { word-break: break-word; overflow-wrap: break-word; }
 @media (max-width: 768px) {
   input, select, textarea { font-size: 16px !important; }
 }
+
+/* ── Responsive Global ── */
+#root { overflow-x: hidden; }
+
+/* Fix horizontal scroll on all devices */
+section, div { max-width: 100%; }
+
+/* Minimum touch target */
+button { min-height: 40px; min-width: 40px; }
+
+/* iOS input zoom prevention */
+@media (max-width: 767px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="password"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

@@ -376,7 +376,7 @@ function ScrollRow({ products, currency, label, direction = 1, onProductClick })
         </div>
       </div>
       <div ref={rowRef} onScroll={checkScroll}
-        className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide"
+        className="flex gap-3 sm:gap-5 overflow-x-auto pb-4 scrollbar-hide"
         style={{ scrollSnapType: "x mandatory" }}>
         {/* duplicate for infinite feel */}
         {[...products, ...products].map((p, i) => (
@@ -452,7 +452,7 @@ export default function Collection({ onProductClick, jumpCategory, onJumpDone })
   })();
 
   return (
-    <section id="collection" className="py-14 md:py-28 overflow-hidden"
+    <section id="collection" className="py-10 sm:py-14 md:py-28 overflow-hidden"
       style={{ background: "linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%)" }}>
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 md:px-12">
 

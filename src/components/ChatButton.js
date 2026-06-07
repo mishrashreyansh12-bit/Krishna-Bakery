@@ -447,7 +447,7 @@ export default function ChatButton({ onOrderNow }) {
       {/* ── Chat Window ── */}
       {isOpen && (
         <div className="bg-white rounded-2xl shadow-2xl w-[calc(100vw-2rem)] sm:w-80 md:w-96 max-w-sm border border-gray-100 flex flex-col overflow-hidden"
-          style={{ height: "580px" }}>
+          style={{ height: "min(580px, calc(100vh - 6rem))" }}>
 
           {/* Header */}
           <div className="shrink-0" style={{ background: "linear-gradient(135deg, #78350f 0%, #92400e 60%, #b45309 100%)" }}>

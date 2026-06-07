@@ -778,6 +778,7 @@ export default function UserAccountDrawer({ isOpen, onClose, user, onLoginClick,
             className="fixed top-0 right-0 bottom-0 z-[160] flex flex-col"
             style={{
               width: "min(420px, 100vw)",
+              overflowX: "hidden",
               background: "linear-gradient(160deg, #1a1508 0%, #0f0d08 100%)",
               borderLeft: "1px solid rgba(212,168,67,0.15)",
               boxShadow: "-20px 0 60px rgba(0,0,0,0.5)",
