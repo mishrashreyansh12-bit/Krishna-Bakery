@@ -1000,8 +1000,3 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
 }
 
 export default OrderMenu;
-    </div>
-  );
-}
-
-export default OrderMenu;
