@@ -4,6 +4,7 @@ import { useLocation, TRANSLATIONS } from "../context/LocationContext";
 import { AnimatePresence, motion } from "framer-motion";
 import OrderTracking from "./OrderTracking";
 import { applyReferralOnOrder } from "./ReferralSystem";
+import PaymentModal from "./PaymentModal";
 
 // ─── Flash Sale Items (id → end time) ────────────────────────────────────────
 const FLASH_SALES = {
@@ -149,6 +150,7 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
   const [showTracking, setShowTracking] = useState(false);
   const [orderNotes, setOrderNotes] = useState("");
   const [showAbandonedCart, setShowAbandonedCart] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const itemRefs = useRef({});
   const mainRef = useRef(null);
 
@@ -853,9 +855,9 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                   ) : (
                     <>
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7"/>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
                       </svg>
-                      {t.menuPlaceOrder} · ₹{totalPrice - (appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0)}
+                      Pay ₹{totalPrice - (appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0)} →
                     </>
                   )}
                 </button>
@@ -937,6 +939,67 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
           />
         )}
       </AnimatePresence>
+
+      {/* ── Payment Modal ── */}
+      <AnimatePresence>
+        {showPayment && (
+          <PaymentModal
+            isOpen={showPayment}
+            onClose={() => { setShowPayment(false); setShowCart(true); }}
+            amount={(() => {
+              const promoDiscount = appliedPromo
+                ? (appliedPromo.code === "COMBO15" ? Math.round(totalPrice * 0.15)
+                  : appliedPromo.minOrder && totalPrice >= appliedPromo.minOrder
+                    ? parseInt(appliedPromo.desc.match(/₹(\d+)/)?.[1] || 0) : 0)
+                : 0;
+              const comboDiscount = appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0;
+              return totalPrice - promoDiscount - comboDiscount;
+            })()}
+            orderId={placedOrderId || Date.now().toString()}
+            orderInfo={orderInfo}
+            onPaymentDone={async (txnId) => {
+              setOrderLoading(true);
+              const promoDiscount = appliedPromo
+                ? (appliedPromo.code === "COMBO15" ? Math.round(totalPrice * 0.15)
+                  : appliedPromo.minOrder && totalPrice >= appliedPromo.minOrder
+                    ? parseInt(appliedPromo.desc.match(/₹(\d+)/)?.[1] || 0) : 0)
+                : 0;
+              const comboDiscount = appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0;
+              const finalTotal = totalPrice - promoDiscount - comboDiscount;
+              const deliveryDateStr = deliveryDate === "today" ? "Today" : deliveryDate === "tomorrow" ? "Tomorrow" : customDate || "";
+              const items = Object.entries(cart).map(([id, qty]) => {
+                const item = allItems.find((i) => i.id === Number(id));
+                return { id: Number(id), name: item?.name, price: item?.price, qty };
+              });
+              const saved = await saveOrder({
+                customerName: orderInfo.customerName || "Guest",
+                contact:      orderInfo.contact || orderInfo.address,
+                email:        orderInfo.email || "",
+                orderType:    orderInfo.orderType,
+                address:      orderInfo.address,
+                items,
+                subtotal:     totalPrice,
+                discount:     promoDiscount,
+                comboDiscount,
+                total:        finalTotal,
+                promoCode:    appliedPromo?.code || "",
+                deliveryDate: deliveryDateStr,
+                notes:        `${orderNotes} | UPI TXN: ${txnId}`,
+              });
+              if (saved?.id) setPlacedOrderId(saved.id);
+              applyReferralOnOrder(orderInfo.contact || orderInfo.address);
+              setOrderLoading(false);
+              setOrderPlaced(true);
+              setShowPayment(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export default OrderMenu;
     </div>
   );
 }
