@@ -81,7 +81,7 @@ export default function LocationMenu({ onCategoryClick }) {
             transition={{ duration: 0.2 }}
             className="absolute top-full mt-2 z-[200] rounded-2xl overflow-hidden"
             style={{
-              width: "320px",
+              width: "340px",
               right: 0,
               background: "rgba(18,13,8,0.98)",
               border: "1px solid rgba(212,168,67,0.18)",
@@ -152,15 +152,15 @@ export default function LocationMenu({ onCategoryClick }) {
                       const isSel = selLang === l;
                       return (
                         <button key={l} onClick={() => setSelLang(l)}
-                          className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all"
+                          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all"
                           style={{
                             background: isSel ? "rgba(212,168,67,0.12)" : "rgba(255,255,255,0.04)",
                             border: `1.5px solid ${isSel ? "rgba(212,168,67,0.5)" : "rgba(255,255,255,0.07)"}`,
                           }}>
-                          <span className="text-2xl">{meta?.flag}</span>
-                          <div className="flex-1 text-left">
-                            <p className="text-sm font-bold" style={{ color: isSel ? "#D4A843" : "rgba(242,232,217,0.85)" }}>{meta?.label}</p>
-                            <p className="text-[11px]" style={{ color: "rgba(242,232,217,0.4)" }}>{meta?.native}</p>
+                          <span className="text-xl shrink-0">{meta?.flag}</span>
+                          <div className="flex-1 text-left min-w-0">
+                            <p className="text-sm font-bold truncate" style={{ color: isSel ? "#D4A843" : "rgba(242,232,217,0.85)" }}>{meta?.label}</p>
+                            <p className="text-[10px] truncate" style={{ color: "rgba(242,232,217,0.4)" }}>{meta?.native}</p>
                           </div>
                           {isSel && (
                             <div className="w-5 h-5 rounded-full flex items-center justify-center shrink-0"
