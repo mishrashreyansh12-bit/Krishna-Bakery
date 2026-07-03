@@ -142,7 +142,7 @@ export default function LocationMenu({ onCategoryClick }) {
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
             className="absolute top-full mt-2 z-[200] rounded-2xl overflow-hidden"
             style={{
-              width: "min(360px, 94vw)",
+              width: "300px",
               right: 0,
               background: "rgba(20,15,10,0.98)",
               border: "1px solid rgba(212,168,67,0.14)",
@@ -163,8 +163,8 @@ export default function LocationMenu({ onCategoryClick }) {
                   </svg>
                 </motion.button>
               )}
-              <div className="flex-1">
-                <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "rgba(212,168,67,0.5)" }}>
+              <div className="flex-1 min-w-0">
+                <p className="text-[10px] uppercase tracking-[0.3em] truncate" style={{ color: "rgba(212,168,67,0.5)" }}>
                   {headerLabel}
                 </p>
               </div>
