@@ -802,44 +802,9 @@ function OrderMenu({ orderInfo, onClose, highlightProductId }) {
                 </div>
               ) : (
                 <button
-                  onClick={async () => {
-                    setOrderLoading(true);
-                    const promoDiscount = appliedPromo
-                      ? (appliedPromo.code === "COMBO15"
-                          ? Math.round(totalPrice * 0.15)
-                          : appliedPromo.minOrder && totalPrice >= appliedPromo.minOrder
-                            ? parseInt(appliedPromo.desc.match(/₹(\d+)/)?.[1] || 0)
-                            : 0)
-                      : 0;
-                    const comboDiscount = appliedCombo ? Math.round(totalPrice * appliedCombo.discount / 100) : 0;
-                    const finalTotal = totalPrice - promoDiscount - comboDiscount;
-                    const deliveryDateStr = deliveryDate === "today" ? "Today"
-                      : deliveryDate === "tomorrow" ? "Tomorrow"
-                      : customDate || "";
-                    const items = Object.entries(cart).map(([id, qty]) => {
-                      const item = allItems.find((i) => i.id === Number(id));
-                      return { id: Number(id), name: item?.name, price: item?.price, qty };
-                    });
-                    const saved = await saveOrder({
-                      customerName:  orderInfo.customerName || "Guest",
-                      contact:       orderInfo.contact || orderInfo.address,
-                      email:         orderInfo.email || "",
-                      orderType:     orderInfo.orderType,
-                      address:       orderInfo.address,
-                      items,
-                      subtotal:      totalPrice,
-                      discount:      promoDiscount,
-                      comboDiscount,
-                      total:         finalTotal,
-                      promoCode:     appliedPromo?.code || "",
-                      deliveryDate:  deliveryDateStr,
-                      notes:         orderNotes,
-                    });
-                    if (saved?.id) setPlacedOrderId(saved.id);
-                    // apply referral credit if came via referral link
-                    applyReferralOnOrder(orderInfo.contact || orderInfo.address);                    setOrderLoading(false);
-                    setOrderPlaced(true);
+                  onClick={() => {
                     setShowCart(false);
+                    setShowPayment(true);
                   }}
                   disabled={orderLoading}
                   className="w-full bg-amber-900 hover:bg-amber-800 text-white py-3.5 rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 disabled:opacity-60"

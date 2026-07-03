@@ -173,24 +173,6 @@ export default function LocationMenu({ onCategoryClick }) {
                 style={{ color: "rgba(242,232,217,0.3)" }}>✕</button>
             </div>
 
-            {/* Step indicator */}
-            <div className="flex px-4 pt-3 gap-2">
-              {STEPS.map((l, i) => (
-                <div key={l} className="flex items-center gap-1.5">
-                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-bold"
-                    style={{
-                      background: i <= stepDisplayIndex ? "linear-gradient(135deg,#D4A843,#8B6914)" : "rgba(255,255,255,0.06)",
-                      color: i <= stepDisplayIndex ? "#0a0800" : "rgba(242,232,217,0.25)",
-                    }}>{i + 1}</div>
-                  <span className="text-[9px] uppercase tracking-widest hidden sm:block"
-                    style={{ color: i === stepDisplayIndex ? "var(--gold)" : "rgba(242,232,217,0.25)" }}>{l}</span>
-                  {i < STEPS.length - 1 && (
-                    <div className="w-4 h-px" style={{ background: i < stepDisplayIndex ? "rgba(212,168,67,0.4)" : "rgba(255,255,255,0.08)" }}/>
-                  )}
-                </div>
-              ))}
-            </div>
-
             {/* Content */}
             <div className="overflow-hidden" style={{ minHeight: 200 }}>
               <AnimatePresence mode="wait">
