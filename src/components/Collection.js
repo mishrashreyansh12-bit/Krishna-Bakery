@@ -316,26 +316,14 @@ const ProductCard = React.memo(function ProductCard({ product, currency, index, 
 
 // ── Horizontal scroll row — CSS marquee (smooth, no freeze) ──────────────────
 function ScrollRow({ products, currency, label, direction = 1, onProductClick }) {
-  const trackRef = useRef(null);
   const [paused, setPaused] = useState(false);
-
-  // Calculate animation duration based on product count
-  const duration = products.length * 8; // 8s per item
+  const duration = products.length * 8;
 
   return (
     <div className="mb-14 md:mb-16">
       <div className="flex items-center justify-between mb-5 md:mb-6 px-1">
         <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "rgba(212,168,67,0.55)" }}>{label}</p>
-        <div className="flex items-center gap-1">
-          <button onClick={() => setPaused(p => !p)}
-            className="text-[9px] px-3 py-1.5 rounded-full transition-all"
-            style={{ background: paused ? "rgba(212,168,67,0.15)" : "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: paused ? "#D4A843" : "rgba(255,255,255,0.4)" }}>
-            {paused ? "▶ Play" : "⏸ Pause"}
-          </button>
-        </div>
       </div>
-
-      {/* CSS marquee container */}
       <div className="overflow-hidden"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
@@ -343,14 +331,12 @@ function ScrollRow({ products, currency, label, direction = 1, onProductClick })
         onTouchEnd={() => setTimeout(() => setPaused(false), 2000)}
       >
         <div
-          ref={trackRef}
           className="flex gap-5"
           style={{
-            animation: `marquee-${direction > 0 ? "left" : "right"} ${duration}s linear infinite`,
+            animation: `${direction > 0 ? "marquee-left" : "marquee-right"} ${duration}s linear infinite`,
             animationPlayState: paused ? "paused" : "running",
             width: "max-content",
           }}>
-          {/* Triple duplicate for seamless infinite loop */}
           {[...products, ...products, ...products].map((p, i) => (
             <div key={`${p.id}-${i}`} style={{ flexShrink: 0 }}>
               <ProductCard product={p} currency={currency} index={i % products.length} onProductClick={onProductClick} />
