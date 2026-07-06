@@ -69,7 +69,7 @@ function AuthModal({ onClose, onSuccess }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[200] flex items-center justify-center px-3 sm:px-4"
+        className="fixed inset-0 z-[200] flex items-center justify-center px-3 sm:px-4 py-4"
         style={{ background: "rgba(8,7,5,0.92)", backdropFilter: "blur(16px)" }}
       >
         <motion.div
@@ -82,6 +82,8 @@ function AuthModal({ onClose, onSuccess }) {
             background: "linear-gradient(160deg, #1a1508 0%, #0f0d08 100%)",
             border: "1px solid rgba(212,168,67,0.2)",
             boxShadow: "0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,168,67,0.05)",
+            maxHeight: "calc(100vh - 2rem)",
+            overflowY: "auto",
           }}
         >
           {/* Close button */}
@@ -94,7 +96,7 @@ function AuthModal({ onClose, onSuccess }) {
           </button>
 
           {/* ── TOP OFFER BANNER ── */}
-          <div className="relative px-6 pt-8 pb-6 text-center overflow-hidden">
+          <div className="relative px-6 pt-5 pb-4 text-center overflow-hidden">
             {/* glow */}
             <div className="absolute inset-0 pointer-events-none"
               style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(212,168,67,0.12) 0%, transparent 70%)" }} />
@@ -103,7 +105,7 @@ function AuthModal({ onClose, onSuccess }) {
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-              className="text-5xl mb-3"
+              className="text-4xl mb-2"
             >
               🎁
             </motion.div>
@@ -134,7 +136,7 @@ function AuthModal({ onClose, onSuccess }) {
           </div>
 
           {/* ── FORM SECTION ── */}
-          <div className="px-6 pb-7 space-y-4">
+          <div className="px-5 pb-5 space-y-3">
 
             {/* Tabs */}
             <div className="flex rounded-xl overflow-hidden p-0.5"
