@@ -314,76 +314,49 @@ const ProductCard = React.memo(function ProductCard({ product, currency, index, 
   );
 });
 
-// ── Horizontal scroll row ─────────────────────────────────────────────────────
+// ── Horizontal scroll row — CSS marquee (smooth, no freeze) ──────────────────
 function ScrollRow({ products, currency, label, direction = 1, onProductClick }) {
-  const rowRef  = useRef(null);
-  const [canLeft,  setCanLeft]  = useState(false);
-  const [canRight, setCanRight] = useState(true);
+  const trackRef = useRef(null);
+  const [paused, setPaused] = useState(false);
 
-  function checkScroll() {
-    const el = rowRef.current;
-    if (!el) return;
-    setCanLeft(el.scrollLeft > 10);
-    setCanRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10);
-  }
-
-  function scroll(dir) {
-    rowRef.current?.scrollBy({ left: dir * 280, behavior: "smooth" });
-  }
-
-  // auto-scroll
-  useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    let raf;
-    let paused = false;
-    const speed = 0.5 * direction;
-
-    const animate = () => {
-      if (!paused) {
-        el.scrollLeft += speed;
-        if (el.scrollLeft >= el.scrollWidth - el.clientWidth) el.scrollLeft = 0;
-        if (el.scrollLeft <= 0 && direction < 0) el.scrollLeft = el.scrollWidth - el.clientWidth;
-      }
-      raf = requestAnimationFrame(animate);
-    };
-    raf = requestAnimationFrame(animate);
-
-    el.addEventListener("mouseenter", () => { paused = true; });
-    el.addEventListener("mouseleave", () => { paused = false; });
-    return () => cancelAnimationFrame(raf);
-  }, [direction]);
+  // Calculate animation duration based on product count
+  const duration = products.length * 8; // 8s per item
 
   return (
-    <div className="mb-16">
-      <div className="flex items-center justify-between mb-6 px-1">
+    <div className="mb-14 md:mb-16">
+      <div className="flex items-center justify-between mb-5 md:mb-6 px-1">
         <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "rgba(212,168,67,0.55)" }}>{label}</p>
-        <div className="flex gap-2">
-          <button onClick={() => scroll(-1)}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
-            style={{ background: canLeft ? "rgba(212,168,67,0.15)" : "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <svg className="w-3.5 h-3.5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7"/>
-            </svg>
-          </button>
-          <button onClick={() => scroll(1)}
-            className="w-8 h-8 rounded-full flex items-center justify-center transition-all"
-            style={{ background: canRight ? "rgba(212,168,67,0.15)" : "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-            <svg className="w-3.5 h-3.5 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7"/>
-            </svg>
+        <div className="flex items-center gap-1">
+          <button onClick={() => setPaused(p => !p)}
+            className="text-[9px] px-3 py-1.5 rounded-full transition-all"
+            style={{ background: paused ? "rgba(212,168,67,0.15)" : "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: paused ? "#D4A843" : "rgba(255,255,255,0.4)" }}>
+            {paused ? "▶ Play" : "⏸ Pause"}
           </button>
         </div>
       </div>
-      <div ref={rowRef} onScroll={checkScroll}
-        className="flex gap-3 sm:gap-5 overflow-x-auto pb-4 scrollbar-hide"
-        style={{ scrollSnapType: "x mandatory" }}>
-        {/* duplicate for infinite feel */}
-        {[...products, ...products].map((p, i) => (
-          <div key={`${p.id}-${i}`} style={{ scrollSnapAlign: "start" }}>
-            <ProductCard product={p} currency={currency} index={i} onProductClick={onProductClick} />
-          </div>
-        ))}
+
+      {/* CSS marquee container */}
+      <div className="overflow-hidden"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onTouchStart={() => setPaused(true)}
+        onTouchEnd={() => setTimeout(() => setPaused(false), 2000)}
+      >
+        <div
+          ref={trackRef}
+          className="flex gap-5"
+          style={{
+            animation: `marquee-${direction > 0 ? "left" : "right"} ${duration}s linear infinite`,
+            animationPlayState: paused ? "paused" : "running",
+            width: "max-content",
+          }}>
+          {/* Triple duplicate for seamless infinite loop */}
+          {[...products, ...products, ...products].map((p, i) => (
+            <div key={`${p.id}-${i}`} style={{ flexShrink: 0 }}>
+              <ProductCard product={p} currency={currency} index={i % products.length} onProductClick={onProductClick} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
