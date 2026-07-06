@@ -81,7 +81,9 @@ export default function LocationMenu({ onCategoryClick }) {
             transition={{ duration: 0.2 }}
             className="absolute top-full mt-2 z-[200] rounded-2xl overflow-hidden"
             style={{
-              width: "340px",
+              width: "320px",
+              minWidth: "320px",
+              maxWidth: "320px",
               right: 0,
               background: "rgba(18,13,8,0.98)",
               border: "1px solid rgba(212,168,67,0.18)",
@@ -111,8 +113,8 @@ export default function LocationMenu({ onCategoryClick }) {
                 style={{ background: "rgba(255,255,255,0.06)", color: "rgba(242,232,217,0.4)" }}>✕</button>
             </div>
 
-            {/* Content */}
-            <div style={{ maxHeight: "360px", overflowY: "auto" }}>
+            {/* Content — fixed height, never resizes */}
+            <div style={{ height: "320px", overflowY: "auto", overflowX: "hidden" }}>
               <AnimatePresence mode="wait">
 
                 {/* Step 0 — Country */}
@@ -125,9 +127,10 @@ export default function LocationMenu({ onCategoryClick }) {
                       const cityCount = loc.states.reduce((a, s) => a + s.cities.length, 0);
                       return (
                         <button key={loc.country} onClick={() => pickCountry(loc)}
-                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left hover:bg-amber-900/20">
+                          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left hover:bg-amber-900/20"
+                          style={{ minWidth: 0 }}>
                           <span className="text-xl shrink-0">{loc.flag}</span>
-                          <div className="flex-1 min-w-0">
+                          <div className="flex-1 min-w-0 overflow-hidden">
                             <p className="text-sm font-semibold truncate" style={{ color: "rgba(242,232,217,0.9)" }}>{loc.country}</p>
                             <p className="text-[10px] truncate" style={{ color: "rgba(242,232,217,0.4)" }}>{cityCount} cities · {langLabel}</p>
                           </div>
@@ -193,10 +196,11 @@ export default function LocationMenu({ onCategoryClick }) {
                           const info = LOCATION_PRODUCT_MAP[city.type];
                           return (
                             <button key={city.city} onClick={() => pickCity(st, city)}
-                              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left hover:bg-amber-900/20">
-                              <div className="flex-1 min-w-0">
+                              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-left hover:bg-amber-900/20"
+                              style={{ minWidth: 0 }}>
+                              <div className="flex-1 min-w-0 overflow-hidden">
                                 <p className="text-sm font-medium truncate" style={{ color: "rgba(242,232,217,0.85)" }}>{city.city}</p>
-                                <p className="text-[10px]" style={{ color: "rgba(242,232,217,0.4)" }}>{info?.deliveryTime} · {info?.canDeliver.length} items</p>
+                                <p className="text-[10px] truncate" style={{ color: "rgba(242,232,217,0.4)" }}>{info?.deliveryTime} · {info?.canDeliver.length} items</p>
                               </div>
                               <span className="text-[9px] px-2 py-1 rounded-full font-semibold shrink-0"
                                 style={{
@@ -218,8 +222,8 @@ export default function LocationMenu({ onCategoryClick }) {
                     <div className="grid grid-cols-2 gap-2 mb-3">
                       {selCity?.areas.map(area => (
                         <button key={area} onClick={() => pickArea(area)}
-                          className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-left transition-all"
-                          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}
+                          className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-left transition-all overflow-hidden"
+                          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", minWidth: 0 }}
                           onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(212,168,67,0.35)"}
                           onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)"}>
                           <span className="text-[10px]">📍</span>
