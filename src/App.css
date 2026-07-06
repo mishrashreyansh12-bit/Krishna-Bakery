@@ -43,3 +43,14 @@ button { min-height: 40px; min-width: 40px; }
     font-size: 16px;
   }
 }
+
+/* Performance: GPU acceleration for animated elements */
+.fixed, .motion-div {
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Prevent repaints during scroll */
+* {
+  -webkit-font-smoothing: antialiased;
+}

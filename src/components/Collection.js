@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import { useLocation, LOCATION_PRODUCT_MAP, TRANSLATIONS } from "../context/LocationContext";
@@ -77,7 +77,7 @@ const TAG_COLORS = {
 };
 
 // ── 3D Tilt Card ─────────────────────────────────────────────────────────────
-function ProductCard({ product, currency, index, onProductClick }) {
+const ProductCard = React.memo(function ProductCard({ product, currency, index, onProductClick }) {
   const cardRef = useRef(null);
   const [hovered, setHovered] = useState(false);
   const [wishlisted, setWishlisted] = useState(() => {
@@ -154,7 +154,7 @@ function ProductCard({ product, currency, index, onProductClick }) {
         <div className="relative overflow-hidden rounded-2xl mb-4"
           style={{ height: 300 }}>
           <motion.img
-            src={product.image} alt={product.name}
+            src={product.image} alt={product.name} loading="lazy"
             className="w-full h-full object-cover"
             animate={{ scale: hovered ? 1.1 : 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -312,7 +312,7 @@ function ProductCard({ product, currency, index, onProductClick }) {
       </div>
     </motion.div>
   );
-}
+});
 
 // ── Horizontal scroll row ─────────────────────────────────────────────────────
 function ScrollRow({ products, currency, label, direction = 1, onProductClick }) {

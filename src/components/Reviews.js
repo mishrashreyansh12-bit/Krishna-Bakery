@@ -99,7 +99,7 @@ function ReviewCard({ review }) {
     <div className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <img src={review.avatar} alt={review.name} className="w-11 h-11 rounded-full object-cover ring-2 ring-amber-100" />
+          <img src={review.avatar} alt={review.name} loading="lazy" className="w-11 h-11 rounded-full object-cover ring-2 ring-amber-100" />
           <div>
             <div className="flex items-center gap-2">
               <p className="text-sm font-bold text-gray-900">{review.name}</p>

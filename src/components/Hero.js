@@ -126,6 +126,7 @@ export default function Hero({ onOrderClick }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 1.4, ease: "easeInOut" }}>
             <img src={current.url} alt={current.tag}
+              fetchPriority="high"
               className="w-full h-full object-cover object-center"
               style={{ filter: "brightness(0.65) saturate(1.1)" }}
             />

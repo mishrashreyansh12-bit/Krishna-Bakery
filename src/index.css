@@ -102,3 +102,30 @@ h1, h2, h3, h4 { font-family: 'Playfair Display', serif; }
 /* ── Touch ── */
 button, a { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
 img { display: block; max-width: 100%; }
+
+/* ── Image Performance Optimizations ── */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+  will-change: auto;
+  backface-visibility: hidden;
+}
+
+/* Prevent layout shift */
+.img-container {
+  position: relative;
+  overflow: hidden;
+  background: rgba(42,33,24,0.3);
+}
+
+/* Smooth image fade-in */
+img.loaded {
+  animation: imgFadeIn 0.3s ease;
+}
+
+@keyframes imgFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
