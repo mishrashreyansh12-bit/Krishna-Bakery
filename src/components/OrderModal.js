@@ -149,7 +149,7 @@ function OrderModal({ onClose, onProceed }) {
                 placeholder="Shivam Mishra"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 text-sm outline-none transition"
+                className="w-full border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 text-sm outline-none transition text-gray-900 bg-white"
               />
             </div>
             <div>
@@ -166,7 +166,7 @@ function OrderModal({ onClose, onProceed }) {
                   value={phone}
                   maxLength={10}
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
-                  className="flex-1 border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 text-sm outline-none transition"
+                  className="flex-1 border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 text-sm outline-none transition text-gray-900 bg-white"
                 />
               </div>
               {phone.length > 0 && !phoneOk && (
@@ -185,7 +185,7 @@ function OrderModal({ onClose, onProceed }) {
               placeholder="shivam@gmail.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 text-sm outline-none transition"
+              className="w-full border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 text-sm outline-none transition text-gray-900 bg-white"
             />
           </div>
 
@@ -253,7 +253,7 @@ function OrderModal({ onClose, onProceed }) {
                     if (e.target.value !== address) setAddress("");
                   }}
                   onFocus={() => suggestions.length > 0 && setShowSug(true)}
-                  className="w-full border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 pr-8 text-sm outline-none transition"
+                  className="w-full border border-gray-200 focus:border-amber-600 rounded-xl px-3 py-2.5 pr-8 text-sm outline-none transition text-gray-900 bg-white"
                 />
                 {loadingSug && (
                   <svg className="animate-spin w-4 h-4 text-amber-500 absolute right-3 top-3" fill="none" viewBox="0 0 24 24">
