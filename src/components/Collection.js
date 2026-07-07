@@ -2,6 +2,10 @@ import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import { useLocation, LOCATION_PRODUCT_MAP, TRANSLATIONS } from "../context/LocationContext";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, FreeMode } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/free-mode";
 
 // ── 48 Premium International Bakery Products ────────────────────────────────
 const PRODUCTS = [
@@ -314,42 +318,35 @@ const ProductCard = React.memo(function ProductCard({ product, currency, index, 
   );
 });
 
-// ── Horizontal scroll row — Pure CSS marquee, all devices ────────────────────
+// ── Horizontal scroll row — Swiper (smooth all devices) ──────────────────────
 function ScrollRow({ products, currency, label, direction = 1, onProductClick }) {
-  const [paused, setPaused] = useState(false);
-  const duration = products.length * 5;
-  const animName = direction > 0 ? "marquee-left" : "marquee-right";
-
   return (
     <div className="mb-14 md:mb-16">
       <div className="px-1 mb-5">
         <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "rgba(212,168,67,0.55)" }}>{label}</p>
       </div>
-      <div
-        className="overflow-hidden"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onTouchStart={() => setPaused(true)}
-        onTouchEnd={() => setTimeout(() => setPaused(false), 3000)}
-        style={{ WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)" }}
+      <Swiper
+        modules={[Autoplay, FreeMode]}
+        freeMode={{ enabled: true, momentum: true, momentumRatio: 0.5 }}
+        autoplay={{
+          delay: 0,
+          disableOnInteraction: false,
+          reverseDirection: direction < 0,
+          pauseOnMouseEnter: true,
+        }}
+        speed={3000}
+        loop={true}
+        slidesPerView="auto"
+        spaceBetween={20}
+        grabCursor={true}
+        style={{ paddingBottom: "16px" }}
       >
-        <div style={{
-          display: "flex",
-          gap: "20px",
-          width: "max-content",
-          animation: `${animName} ${duration}s linear infinite`,
-          animationPlayState: paused ? "paused" : "running",
-          willChange: "transform",
-          backfaceVisibility: "hidden",
-          WebkitBackfaceVisibility: "hidden",
-        }}>
-          {[...products, ...products, ...products].map((p, i) => (
-            <div key={`${p.id}-${i}`} style={{ flexShrink: 0 }}>
-              <ProductCard product={p} currency={currency} index={i % products.length} onProductClick={onProductClick} />
-            </div>
-          ))}
-        </div>
-      </div>
+        {[...products, ...products].map((p, i) => (
+          <SwiperSlide key={`${p.id}-${i}`} style={{ width: "auto" }}>
+            <ProductCard product={p} currency={currency} index={i % products.length} onProductClick={onProductClick} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 }
