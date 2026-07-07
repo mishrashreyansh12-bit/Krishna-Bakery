@@ -314,73 +314,37 @@ const ProductCard = React.memo(function ProductCard({ product, currency, index, 
   );
 });
 
-// ── Horizontal scroll row — CSS marquee + manual drag scroll ─────────────────
+// ── Horizontal scroll row — single smooth marquee ────────────────────────────
 function ScrollRow({ products, currency, label, direction = 1, onProductClick }) {
   const [paused, setPaused] = useState(false);
-  const rowRef = useRef(null);
   const duration = products.length * 8;
-
-  // Manual drag scroll
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-
-  function onMouseDown(e) {
-    isDragging.current = true;
-    startX.current = e.pageX - rowRef.current.offsetLeft;
-    scrollLeft.current = rowRef.current.scrollLeft;
-    setPaused(true);
-  }
-  function onMouseMove(e) {
-    if (!isDragging.current) return;
-    e.preventDefault();
-    const x = e.pageX - rowRef.current.offsetLeft;
-    const walk = (x - startX.current) * 2;
-    rowRef.current.scrollLeft = scrollLeft.current - walk;
-  }
-  function onMouseUp() { isDragging.current = false; setTimeout(() => setPaused(false), 1500); }
 
   return (
     <div className="mb-14 md:mb-16">
       <div className="px-1 mb-5">
         <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "rgba(212,168,67,0.55)" }}>{label}</p>
       </div>
-
-      {/* Auto-scroll marquee strip */}
-      <div className="overflow-hidden mb-0">
+      <div
+        className="overflow-hidden cursor-grab active:cursor-grabbing"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onTouchStart={() => setPaused(true)}
+        onTouchEnd={() => setTimeout(() => setPaused(false), 2000)}
+      >
         <div
           className="flex gap-5"
           style={{
             animation: `${direction > 0 ? "marquee-left" : "marquee-right"} ${duration}s linear infinite`,
             animationPlayState: paused ? "paused" : "running",
             width: "max-content",
-          }}>
+          }}
+        >
           {[...products, ...products, ...products].map((p, i) => (
             <div key={`${p.id}-${i}`} style={{ flexShrink: 0 }}>
               <ProductCard product={p} currency={currency} index={i % products.length} onProductClick={onProductClick} />
             </div>
           ))}
         </div>
-      </div>
-
-      {/* Manual draggable scroll row below */}
-      <div
-        ref={rowRef}
-        className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide mt-4 cursor-grab active:cursor-grabbing select-none"
-        style={{ scrollSnapType: "x mandatory" }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => { setPaused(false); isDragging.current = false; }}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onTouchStart={() => setPaused(true)}
-        onTouchEnd={() => setTimeout(() => setPaused(false), 2000)}
-      >
-        {products.map((p, i) => (
-          <div key={p.id} style={{ scrollSnapAlign: "start", flexShrink: 0 }}>
-            <ProductCard product={p} currency={currency} index={i} onProductClick={onProductClick} />
-          </div>
-        ))}
       </div>
     </div>
   );
