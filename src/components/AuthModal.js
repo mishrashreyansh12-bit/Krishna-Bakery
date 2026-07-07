@@ -39,8 +39,13 @@ function AuthModal({ onClose, onSuccess }) {
         options: { data: { full_name: name } },
       });
       if (error) {
-        const msg = error.message.toLowerCase().includes("rate") || error.message.toLowerCase().includes("too many")
+        const errMsg = error.message?.toLowerCase() || "";
+        const msg = errMsg.includes("rate") || errMsg.includes("too many")
           ? "⏳ Too many attempts. Please wait a minute and try again."
+          : errMsg.includes("fetch") || errMsg.includes("network")
+          ? "⚠️ Network error. Check your internet and try again."
+          : errMsg.includes("already")
+          ? "📧 This email is already registered. Please login instead."
           : error.message;
         setMsg({ type: "error", text: msg });
       } else {
@@ -52,8 +57,13 @@ function AuthModal({ onClose, onSuccess }) {
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) {
-        const msg = error.message.toLowerCase().includes("rate") || error.message.toLowerCase().includes("too many")
-          ? "⏳ Too many attempts. Please wait a minute and try again."
+        const errMsg = error.message?.toLowerCase() || "";
+        const msg = errMsg.includes("rate") || errMsg.includes("too many")
+          ? "⏳ Too many attempts. Please wait a minute."
+          : errMsg.includes("fetch") || errMsg.includes("network")
+          ? "⚠️ Network error. Check your internet and try again."
+          : errMsg.includes("invalid") || errMsg.includes("credentials")
+          ? "❌ Wrong email or password."
           : error.message;
         setMsg({ type: "error", text: msg });
       } else {
