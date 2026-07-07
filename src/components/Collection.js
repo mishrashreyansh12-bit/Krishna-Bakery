@@ -314,28 +314,11 @@ const ProductCard = React.memo(function ProductCard({ product, currency, index, 
   );
 });
 
-// ── Horizontal scroll row ─────────────────────────────────────────────────────
+// ── Horizontal scroll row — Pure CSS marquee, all devices ────────────────────
 function ScrollRow({ products, currency, label, direction = 1, onProductClick }) {
-  const rowRef  = useRef(null);
   const [paused, setPaused] = useState(false);
-  const rafRef  = useRef(null);
-
-  useEffect(() => {
-    const el = rowRef.current;
-    if (!el) return;
-    const speed = 0.6 * direction;
-
-    const tick = () => {
-      if (!paused) {
-        el.scrollLeft += speed;
-        if (el.scrollLeft >= el.scrollWidth - el.clientWidth) el.scrollLeft = 0;
-        if (el.scrollLeft <= 0 && direction < 0) el.scrollLeft = el.scrollWidth - el.clientWidth;
-      }
-      rafRef.current = requestAnimationFrame(tick);
-    };
-    rafRef.current = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [direction, paused]);
+  const duration = products.length * 5;
+  const animName = direction > 0 ? "marquee-left" : "marquee-right";
 
   return (
     <div className="mb-14 md:mb-16">
@@ -343,19 +326,29 @@ function ScrollRow({ products, currency, label, direction = 1, onProductClick })
         <p className="text-[10px] uppercase tracking-[0.4em]" style={{ color: "rgba(212,168,67,0.55)" }}>{label}</p>
       </div>
       <div
-        ref={rowRef}
-        className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide cursor-grab active:cursor-grabbing select-none"
-        style={{ scrollSnapType: "x mandatory" }}
+        className="overflow-hidden"
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
         onTouchStart={() => setPaused(true)}
-        onTouchEnd={() => setTimeout(() => setPaused(false), 2000)}
+        onTouchEnd={() => setTimeout(() => setPaused(false), 3000)}
+        style={{ WebkitMaskImage: "linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)" }}
       >
-        {[...products, ...products, ...products].map((p, i) => (
-          <div key={`${p.id}-${i}`} style={{ scrollSnapAlign: "start", flexShrink: 0 }}>
-            <ProductCard product={p} currency={currency} index={i % products.length} onProductClick={onProductClick} />
-          </div>
-        ))}
+        <div style={{
+          display: "flex",
+          gap: "20px",
+          width: "max-content",
+          animation: `${animName} ${duration}s linear infinite`,
+          animationPlayState: paused ? "paused" : "running",
+          willChange: "transform",
+          backfaceVisibility: "hidden",
+          WebkitBackfaceVisibility: "hidden",
+        }}>
+          {[...products, ...products, ...products].map((p, i) => (
+            <div key={`${p.id}-${i}`} style={{ flexShrink: 0 }}>
+              <ProductCard product={p} currency={currency} index={i % products.length} onProductClick={onProductClick} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
