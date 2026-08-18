@@ -79,7 +79,7 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // ── ₹75 Auth popup — har page load/reload pe ek baar ───────────────────
+  // ── ₹60 Auth popup — har page load/reload pe ek baar ───────────────────
   useEffect(() => {
     if (user) return;
 

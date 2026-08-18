@@ -120,7 +120,7 @@ function Stars({ rating }) {
 
 // ─── Promo Codes ─────────────────────────────────────────────────────────────
 const PROMOS = [
-  { code: "WELCOME75", desc: "₹75 OFF on your first order",  minOrder: null },
+  { code: "WELCOME60", desc: "₹60 OFF on your first order",  minOrder: null },
   { code: "COMBO15",  desc: "Flat 15% OFF on all combos",   minOrder: null },
   { code: "FIRST50",  desc: "₹50 OFF on your first order",  minOrder: 500  },
   { code: "SWEET80",  desc: "₹80 OFF above ₹800",           minOrder: 800  },
