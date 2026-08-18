@@ -5,10 +5,17 @@
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Premium non-frosting cakes, English cakes, cheesecakes, and macarons at Krishna Bakery. Customize your desserts with AI and chat with our expert bakers."
-    />
+    <meta name="description" content="Premium non-frosting cakes, English cakes, cheesecakes, and macarons at Krishna Bakery. Customize your desserts with AI and chat with our expert bakers." />
+    <meta property="og:title" content="Krishna Bakery | Premium Artisanal Bakes" />
+    <meta property="og:description" content="Premium non-frosting cakes, English cakes, cheesecakes, and macarons at Krishna Bakery. Customize your desserts with AI." />
+    <meta property="og:image" content="https://stirring-madeleine-7eec5d.netlify.app/logo192.png" />
+    <meta property="og:url" content="https://stirring-madeleine-7eec5d.netlify.app" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Krishna Bakery | Premium Artisanal Bakes" />
+    <meta name="twitter:description" content="Premium non-frosting cakes, English cakes, cheesecakes, and macarons at Krishna Bakery." />
+    <meta name="twitter:image" content="https://stirring-madeleine-7eec5d.netlify.app/logo192.png" />
+    <link rel="canonical" href="https://stirring-madeleine-7eec5d.netlify.app" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -23,11 +30,67 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "Krishna Bakery",
-        "url": "https://stirring-madeleine-7eec5d.netlify.app",
-        "logo": "https://stirring-madeleine-7eec5d.netlify.app/logo192.png",
-        "description": "Premium non-frosting cakes, English cakes, cheesecakes, and macarons at Krishna Bakery. Customize your desserts with AI and chat with our expert bakers."
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://stirring-madeleine-7eec5d.netlify.app/#website",
+            "name": "Krishna Bakery",
+            "url": "https://stirring-madeleine-7eec5d.netlify.app",
+            "description": "Premium non-frosting cakes, English cakes, cheesecakes, and macarons at Krishna Bakery. Customize your desserts with AI.",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://stirring-madeleine-7eec5d.netlify.app?search={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://stirring-madeleine-7eec5d.netlify.app/#organization",
+            "name": "Krishna Bakery",
+            "url": "https://stirring-madeleine-7eec5d.netlify.app",
+            "logo": "https://stirring-madeleine-7eec5d.netlify.app/logo192.png",
+            "description": "Premium artisanal bakery offering non-frosting cakes, English cakes, cheesecakes, and macarons with AI customization."
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://stirring-madeleine-7eec5d.netlify.app/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://stirring-madeleine-7eec5d.netlify.app"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Collections",
+                "item": "https://stirring-madeleine-7eec5d.netlify.app#collection"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": "AI Customizer",
+                "item": "https://stirring-madeleine-7eec5d.netlify.app#ai-customizer"
+              },
+              {
+                "@type": "ListItem",
+                "position": 4,
+                "name": "Our Story",
+                "item": "https://stirring-madeleine-7eec5d.netlify.app#our-story"
+              },
+              {
+                "@type": "ListItem",
+                "position": 5,
+                "name": "Reviews",
+                "item": "https://stirring-madeleine-7eec5d.netlify.app#reviews"
+              }
+            ]
+          }
+        ]
       }
     </script>
   </head>
