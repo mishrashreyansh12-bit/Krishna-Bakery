@@ -1,0 +1,374 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#organization",
+      "name": "Luxholic",
+      "alternateName": "Krishna Bakers | Luxholic",
+      "url": "https://stirring-madeleine-7eec5d.netlify.app",
+      "logo": "https://stirring-madeleine-7eec5d.netlify.app/logo192.png",
+      "description": "Premium non-frosting cakes, English cakes, cheesecakes, and macarons. Artisanal bakery with AI customization.",
+      "sameAs": [
+        "https://www.facebook.com/krishnabakers",
+        "https://www.instagram.com/krishnabakers",
+        "https://twitter.com/krishnabakers"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "Customer Service",
+        "telephone": "+91-9131401594",
+        "email": "contact@luxholic.com"
+      }
+    },
+    {
+      "@type": "LocalBusiness",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#localbusiness",
+      "name": "Luxholic - Krishna Bakers",
+      "description": "Artisanal bakery offering premium cakes, pastries, donuts, and custom desserts.",
+      "url": "https://stirring-madeleine-7eec5d.netlify.app",
+      "image": "https://stirring-madeleine-7eec5d.netlify.app/logo192.png",
+      "priceRange": "₹60 - ₹2500",
+      "areaServed": [
+        "Delhi",
+        "Noida",
+        "Jaipur",
+        "Gurugram",
+        "Faridabad"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Krishna Bakers Store",
+        "addressLocality": "Delhi",
+        "addressRegion": "Delhi",
+        "postalCode": "110000",
+        "addressCountry": "IN"
+      },
+      "telephone": "+91-9131401594",
+      "email": "contact@luxholic.com",
+      "foundingDate": "2019",
+      "sameAs": [
+        "https://www.facebook.com/krishnabakers",
+        "https://www.instagram.com/krishnabakers"
+      ],
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "1240",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Monday",
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Tuesday",
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Wednesday",
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Thursday",
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Friday",
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Saturday",
+          "opens": "08:00",
+          "closes": "22:00"
+        },
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Sunday",
+          "opens": "10:00",
+          "closes": "22:00"
+        }
+      ]
+    },
+    {
+      "@type": "Product",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#product-dark-chocolate",
+      "name": "Dark Chocolate Truffle",
+      "description": "72% dark ganache, velvet crumb, zero compromise.",
+      "image": "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=90&w=800",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://stirring-madeleine-7eec5d.netlify.app",
+        "priceCurrency": "INR",
+        "price": "520",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2026-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "156",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "category": "Signature Cakes"
+    },
+    {
+      "@type": "Product",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#product-cheesecake",
+      "name": "Velvet Cheesecake",
+      "description": "New York style baked cheesecake. Silky & rich.",
+      "image": "https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&q=90&w=800",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://stirring-madeleine-7eec5d.netlify.app",
+        "priceCurrency": "INR",
+        "price": "380",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2026-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "203",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "category": "Signature Cakes"
+    },
+    {
+      "@type": "Product",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#product-mango-mousse",
+      "name": "Mango Mousse Cake",
+      "description": "Fresh alphonso mango pulp with light mousse layers.",
+      "image": "https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&q=90&w=800",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://stirring-madeleine-7eec5d.netlify.app",
+        "priceCurrency": "INR",
+        "price": "490",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2026-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.6",
+        "ratingCount": "89",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "category": "Signature Cakes"
+    },
+    {
+      "@type": "Product",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#product-croissant",
+      "name": "Butter Croissant",
+      "description": "81 layers of laminated dough. Baked every morning.",
+      "image": "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&q=90&w=800",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://stirring-madeleine-7eec5d.netlify.app",
+        "priceCurrency": "INR",
+        "price": "120",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2026-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "ratingCount": "210",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "category": "Viennoiserie"
+    },
+    {
+      "@type": "Product",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#product-glazed-donut",
+      "name": "Glazed Ring Donuts",
+      "description": "Pillowy soft, mirror-glazed in seasonal flavours.",
+      "image": "https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=90&w=800",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://stirring-madeleine-7eec5d.netlify.app",
+        "priceCurrency": "INR",
+        "price": "80",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2026-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "ratingCount": "142",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "category": "Donuts"
+    },
+    {
+      "@type": "Product",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#product-cupcake",
+      "name": "Vanilla Swirl Cupcake",
+      "description": "Tall swirl frosting on a moist vanilla sponge.",
+      "image": "https://images.unsplash.com/photo-1607478900766-efe13248b125?auto=format&fit=crop&q=90&w=800",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://stirring-madeleine-7eec5d.netlify.app",
+        "priceCurrency": "INR",
+        "price": "120",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2026-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.6",
+        "ratingCount": "98",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "category": "Cupcakes"
+    },
+    {
+      "@type": "Product",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#product-brownie",
+      "name": "Fudge Brownies",
+      "description": "Crinkle top, gooey centre. Our most loved item.",
+      "image": "https://images.unsplash.com/photo-1607478900766-efe13248b127?auto=format&fit=crop&q=90&w=800",
+      "offers": {
+        "@type": "Offer",
+        "url": "https://stirring-madeleine-7eec5d.netlify.app",
+        "priceCurrency": "INR",
+        "price": "270",
+        "availability": "https://schema.org/InStock",
+        "priceValidUntil": "2026-12-31"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "178",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "category": "Brownies"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#breadcrumb",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://stirring-madeleine-7eec5d.netlify.app"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Collections",
+          "item": "https://stirring-madeleine-7eec5d.netlify.app#collection"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "AI Customizer",
+          "item": "https://stirring-madeleine-7eec5d.netlify.app#ai-customizer"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Our Story",
+          "item": "https://stirring-madeleine-7eec5d.netlify.app#our-story"
+        },
+        {
+          "@type": "ListItem",
+          "position": 5,
+          "name": "Reviews",
+          "item": "https://stirring-madeleine-7eec5d.netlify.app#reviews"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://stirring-madeleine-7eec5d.netlify.app/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is AI Customizer?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "AI Customizer is our innovative feature that helps you find the perfect cake based on your mood, preferences, and occasion. Just answer a few questions and let AI suggest the ideal dessert for you!"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you offer same-day delivery?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! For orders under ₹600 placed before 2 PM, we offer same-day delivery in Delhi and nearby areas. Pre-order options are also available for larger cakes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are your cakes eggless?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We offer both eggless and egg-based cakes. Most of our premium collection items are available in eggless variants. Please specify your preference while ordering."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I customize my cake?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely! Many of our items are customizable. You can add custom messages, change flavors, adjust sizes, and more. Select the ✏️ icon on any customizable item."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is the referral program?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Refer friends to Luxholic and earn ₹100 credit per successful referral. Your friends get ₹60 OFF on their first order and you earn rewards!"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Do you have promo codes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes! We offer various promo codes: WELCOME60 (₹60 OFF first order), COMBO15 (15% OFF combos), FIRST50, SWEET80, BAKE125, and ROYAL200. View all offers in the Offers section."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How is delivery charged?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Delivery is FREE for all orders! We believe quality desserts should be accessible to everyone. No hidden charges."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What payment methods do you accept?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "We accept all major payment methods: Credit/Debit cards, UPI (Google Pay, PhonePe, Paytm), Wallets, and Cash on Delivery options."
+          }
+        }
+      ]
+    }
+  ]
+}
