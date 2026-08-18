@@ -49,9 +49,9 @@ function AuthModal({ onClose, onSuccess }) {
           : error.message;
         setMsg({ type: "error", text: msg });
       } else {
-        setMsg({ type: "success", text: "✅ Account created! ₹70 discount applied to your first order." });
+        setMsg({ type: "success", text: "✅ Account created! ₹75 discount applied to your first order." });
         setTimeout(() => {
-          onSuccess?.("WELCOME70");
+          onSuccess?.("WELCOME75");
         }, 1800);
       }
     } else {
@@ -137,7 +137,7 @@ function AuthModal({ onClose, onSuccess }) {
                 backgroundClip: "text",
               }}
             >
-              ₹70 OFF
+              ₹75 OFF
             </h2>
             <p className="text-white/50 text-sm">on your first order · Register to claim</p>
 
@@ -267,7 +267,7 @@ function AuthModal({ onClose, onSuccess }) {
               {loading
                 ? "Please wait..."
                 : tab === "register"
-                  ? "Create Account & Claim ₹70 Off →"
+                  ? "Create Account & Claim ₹75 Off →"
                   : "Login →"
               }
             </motion.button>

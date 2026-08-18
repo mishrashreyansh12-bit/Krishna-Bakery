@@ -52,7 +52,7 @@ export default function ReferralSystem({ user, isOpen, onClose }) {
   }
 
   function shareWhatsApp() {
-    const msg = `🎂 Hey! Order from Krishna Bakers — premium artisan cakes & pastries.\nUse my link for ₹70 OFF on your first order:\n${referralLink}`;
+    const msg = `🎂 Hey! Order from Krishna Bakers — premium artisan cakes & pastries.\nUse my link for ₹75 OFF on your first order:\n${referralLink}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   }
 
