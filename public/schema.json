@@ -4,8 +4,8 @@
     {
       "@type": "Organization",
       "@id": "https://stirring-madeleine-7eec5d.netlify.app/#organization",
-      "name": "Luxholic",
-      "alternateName": "Krishna Bakers | Luxholic",
+      "name": "Krishna Bakers",
+      "alternateName": "Krishna Bakers ",
       "url": "https://stirring-madeleine-7eec5d.netlify.app",
       "logo": "https://stirring-madeleine-7eec5d.netlify.app/logo192.png",
       "description": "Premium non-frosting cakes, English cakes, cheesecakes, and macarons. Artisanal bakery with AI customization.",
@@ -18,13 +18,13 @@
         "@type": "ContactPoint",
         "contactType": "Customer Service",
         "telephone": "+91-9131401594",
-        "email": "contact@luxholic.com"
+        "email": "shreyanshmishra1409@gmail.com"
       }
     },
     {
       "@type": "LocalBusiness",
       "@id": "https://stirring-madeleine-7eec5d.netlify.app/#localbusiness",
-      "name": "Luxholic - Krishna Bakers",
+      "name": "Krishna Bakers",
       "description": "Artisanal bakery offering premium cakes, pastries, donuts, and custom desserts.",
       "url": "https://stirring-madeleine-7eec5d.netlify.app",
       "image": "https://stirring-madeleine-7eec5d.netlify.app/logo192.png",
@@ -45,7 +45,7 @@
         "addressCountry": "IN"
       },
       "telephone": "+91-9131401594",
-      "email": "contact@luxholic.com",
+      "email": "shreyanshmishra1409@gmail.com",
       "foundingDate": "2019",
       "sameAs": [
         "https://www.facebook.com/krishnabakers",
@@ -341,7 +341,7 @@
           "name": "What is the referral program?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Refer friends to Luxholic and earn ₹100 credit per successful referral. Your friends get ₹60 OFF on their first order and you earn rewards!"
+            "text": "Refer friends to krishna and earn ₹100 credit per successful referral. Your friends get ₹60 OFF on their first order and you earn rewards!"
           }
         },
         {

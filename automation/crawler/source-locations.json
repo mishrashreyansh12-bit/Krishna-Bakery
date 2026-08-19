@@ -1,0 +1,38 @@
+{
+  "generatedAt": "2026-08-19T13:03:30.335Z",
+  "issues": [
+    {
+      "issue": "Missing canonical URL",
+      "severity": "high",
+      "recommendation": "Add a canonical link element pointing to the preferred homepage URL.",
+      "codeChangeRequired": true
+    },
+    {
+      "issue": "Multiple H1 headings detected (2)",
+      "severity": "medium",
+      "recommendation": "Review the page and keep one primary H1 where appropriate.",
+      "codeChangeRequired": true
+    },
+    {
+      "issue": "3 images are missing ALT text",
+      "severity": "medium",
+      "recommendation": "Add meaningful ALT text to informative images.",
+      "codeChangeRequired": true
+    }
+  ],
+  "h1": {
+    "count": 1,
+    "locations": [
+      {
+        "type": "H1",
+        "file": "src\\components\\Hero.js",
+        "line": 600,
+        "code": "<h1 className=\"mb-8\">"
+      }
+    ]
+  },
+  "imagesWithoutAlt": {
+    "count": 0,
+    "locations": []
+  }
+}

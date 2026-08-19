@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-08-19T11:55:38.129Z",
+  "totalIssues": 3,
+  "fixes": [
+    {
+      "issue": "Missing canonical URL",
+      "severity": "high",
+      "file": "public/index.html",
+      "action": "Add the canonical URL for the homepage.",
+      "codeChangeRequired": true
+    },
+    {
+      "issue": "Multiple H1 headings detected (2)",
+      "severity": "medium",
+      "file": "src/components",
+      "action": "Find the multiple H1 elements and keep one primary H1.",
+      "codeChangeRequired": true
+    },
+    {
+      "issue": "3 images are missing ALT text",
+      "severity": "medium",
+      "file": "src/components",
+      "action": "Find images without alt attributes and add meaningful ALT text.",
+      "codeChangeRequired": true
+    }
+  ]
+}

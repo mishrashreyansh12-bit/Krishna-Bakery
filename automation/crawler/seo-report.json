@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-08-19T13:27:08.874Z",
+  "website": "http://localhost:3000",
+  "summary": {
+    "totalIssues": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
+  "seo": {
+    "url": "http://localhost:3000/",
+    "title": "Krishna Bakery | Premium Artisanal Bakes",
+    "titleLength": 40,
+    "description": "Premium non-frosting cakes, English cakes, cheesecakes, and macarons at Krishna Bakery. Customize your desserts with AI and chat with our expert bakers.",
+    "descriptionLength": 152,
+    "canonical": "https://stirring-madeleine-7eec5d.netlify.app",
+    "h1Count": 1,
+    "h1Texts": [
+      "Art of\nthe Bake"
+    ],
+    "imageCount": 98,
+    "imagesWithoutAlt": 3,
+    "schemaCount": 1,
+    "issues": []
+  }
+}
