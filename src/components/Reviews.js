@@ -74,7 +74,7 @@ function InstaCard({ shortcode, poster, label, reviewer, location }) {
       </a>
       <div className="mt-2.5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src={`https://randomuser.me/api/portraits/${reviewer.img}`} alt="" className="w-7 h-7 rounded-full ring-2 ring-pink-200" />
+          <img src={`https://randomuser.me/api/portraits/${reviewer.img}`} alt={`${reviewer.name} profile photo`} className="w-7 h-7 rounded-full ring-2 ring-pink-200" />
           <div>
             <p className="text-xs font-semibold text-gray-800">{reviewer.name}</p>
             <p className="text-[10px] text-gray-400">{location} · ⭐⭐⭐⭐⭐</p>
